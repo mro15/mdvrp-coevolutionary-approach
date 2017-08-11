@@ -14,4 +14,4 @@ main: $(OBJ)
 	$(CC) $(CFLAGS) -c -o $@ $< $(INCL)
 
 clean:
-	rm -f $(OBJ) core
+	rm -f $(OBJ) main

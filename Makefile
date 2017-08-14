@@ -3,9 +3,9 @@ CFLAGS = -Wall -O0
 
 INCL = -I./include
 
-DEPS =
+DEPS = graph.h
 
-OBJ = main.o
+OBJ = main.o graph.o vertex.o
 
 main: $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $^

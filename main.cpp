@@ -29,11 +29,11 @@ int main(int argc, char* argv[]){
     input >> nDepots;
     input >> maxRouteDuration;
     input >> capacity;
-    std::cout << "nCustomers: " << nCustomers << std::endl;
+    /*std::cout << "nCustomers: " << nCustomers << std::endl;
     std::cout << "nDepots: " << nDepots << std::endl;
     std::cout << "nVehicles: " << nVehicles << std::endl;
     std::cout << "maxRouteDuration: " << maxRouteDuration << std::endl;
-    std::cout << "capacity: " << capacity << std::endl;
+    std::cout << "capacity: " << capacity << std::endl;*/
     for(int i=0; i<nCustomers; ++i){
         int id, duration, demand;
         double x, y;
@@ -49,8 +49,10 @@ int main(int argc, char* argv[]){
         g.insertVertex(*v);
     }
     //debug function
-    g.debug();
+    // g.debug();
     //g.printElem(23);
+    g.calcDistances();
+    g.printDistances();
     return 0;
 }
 

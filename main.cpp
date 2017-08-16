@@ -11,7 +11,8 @@
 #include"graph.h"
 
 int main(int argc, char* argv[]){
-    int nCustomers, nDepots, nVehicles, maxRouteDuration, capacity;
+    int nCustomers, nDepots, nVehicles;
+    double maxRouteDuration, capacity;
     std::fstream input;
     char* fileName;
     Graph g;
@@ -37,11 +38,19 @@ int main(int argc, char* argv[]){
         int id, duration, demand;
         double x, y;
         input >> id >> x >> y >> duration >> demand;
-        v = new Vertex(id, duration, demand, x, y);
+        v = new Vertex(id, duration, demand, x, y, CUSTOMER);
         g.insertVertex(*v);
     }
-
+    for(int i=0; i<nDepots; ++i){
+        int id, duration, demand;
+        double x, y;
+        input >> id >> x >> y >> duration >> demand;
+        v = new Vertex(id, duration, demand, x, y, DEPOT);
+        g.insertVertex(*v);
+    }
+    //debug function
     g.debug();
+    //g.printElem(23);
     return 0;
 }
 

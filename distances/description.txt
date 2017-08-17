@@ -1,0 +1,6 @@
+Os arquivos são as distâncias calculadas de todos os veŕtices para todos os
+vértices dos arquivos do diretório intances.
+Formato:
+Col 1:           Col 2:           Col 3:
+id do vértice a  id do vértice b  Distância de a para b
+

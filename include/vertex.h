@@ -1,3 +1,6 @@
+#ifndef __VERTEX_H
+#define __VERTEX_H
+
 #include<iostream>
 #include<fstream>
 #include<vector>
@@ -11,22 +14,23 @@ class Vertex {
         int id, type;
         double x, y, duration, demand;
         std::vector<double> distances;
+
+        int * sortedNeighbors;
+        int route;
+        int lastRoute;
+        int maxVehicles;
+        int _nearestDepot;
     public:
         Vertex(int, double, double, double, double, int);
         void debug();
         int rId();
         void calcDistances(std::vector<Vertex>);
         void printDistances();
+
+        void setNeighborhood(Vertex* neighbors, int length);
+        double distanceTo(int vertex);
+        int kNeighborsRoute(int k);
+        int nearestDepot();
 };
 
-class Graph {
-    private:
-        std::vector<Vertex> vertices;
-    public:
-        Graph();
-        bool insertVertex(Vertex v);
-        void debug();
-        void printElem(int);
-        void calcDistances();
-        void printDistances();
-};
+#endif

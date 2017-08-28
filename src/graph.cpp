@@ -7,6 +7,7 @@ Graph::Graph(){
 
 bool Graph::insertVertex(Vertex v){
     this->vertices.push_back(v);
+    return true;
 }
 
 void Graph::debug(){

@@ -15,8 +15,6 @@ int main(int argc, char* argv[]){
     double maxRouteDuration, capacity;
     std::fstream input;
     char* fileName;
-    Graph g;
-    Vertex *v;
     if(argc!=2){
         std::cout << "Usage is <infile>\n";
         return 0;
@@ -29,29 +27,26 @@ int main(int argc, char* argv[]){
     input >> nDepots;
     input >> maxRouteDuration;
     input >> capacity;
-    /*std::cout << "nCustomers: " << nCustomers << std::endl;
-    std::cout << "nDepots: " << nDepots << std::endl;
-    std::cout << "nVehicles: " << nVehicles << std::endl;
-    std::cout << "maxRouteDuration: " << maxRouteDuration << std::endl;
-    std::cout << "capacity: " << capacity << std::endl;*/
+    Graph g(nCustomers, nDepots);
     for(int i=0; i<nCustomers; ++i){
         int id, duration, demand;
         double x, y;
         input >> id >> x >> y >> duration >> demand;
-        v = new Vertex(id, duration, demand, x, y, CUSTOMER);
-        g.insertVertex(*v);
+        if(!g.addVertex(id, duration, demand, x, y, CUSTOMER)){
+            printf("\nO vertice %d ja foi inserido", id);
+            return(0);
+        }
     }
     for(int i=0; i<nDepots; ++i){
         int id, duration, demand;
         double x, y;
         input >> id >> x >> y >> duration >> demand;
-        v = new Vertex(id, duration, demand, x, y, DEPOT);
-        g.insertVertex(*v);
+        g.addVertex(id, duration, demand, x, y, DEPOT);
     }
+    g.buildEdges();
     //debug function
-    // g.debug();
-    //g.printElem(23);
-    g.calcDistances();
+    g.debug();
+    //g.calcDistances();
     g.printDistances();
     return 0;
 }

@@ -19,25 +19,11 @@ int Vertex::rId() {
     return this->id;
 }
 
-void Vertex::calcDistances(std::vector<Vertex> vertices) {
-    this->distances.clear();
-    this->distances.push_back(0);
-    double xFactor, yFactor;
-    for(std::vector<Vertex>::iterator i=vertices.begin() +1; i != vertices.end(); ++i) {
-        xFactor = this->x - (*i).x;
-        xFactor *= xFactor;
-        yFactor = this->y - (*i).y;
-        yFactor *= yFactor;
-        this->distances.push_back(sqrt(xFactor + yFactor));
-    }
-}
-
 void Vertex::printDistances() {
     for(std::vector<double>::iterator i=distances.begin() +1; i !=distances.end(); ++i) {
         std::cout << id << " " << i - distances.begin() << " " << *i << std::endl;
     }
 }
-
 
 void Vertex::setNeighborhood(Vertex* neighbors, int length) {
     /*
@@ -51,15 +37,20 @@ void Vertex::setNeighborhood(Vertex* neighbors, int length) {
     return;
 }
 
-double Vertex::distanceTo(int vertex) {
+double Vertex::distanceTo(Vertex *vertex) {
     /*
         Returns the distance to this vertex to another vertex.
         Parameters: vertex, vertex id of another vertex
 
         Retusn the weight of the edge beteween the 2 vertices, returns 0
-        for a inexistnt vertex or for the same vertex.
+        for a inexistent vertex or for the same vertex.
     */
-    return 0.0;
+    double xFactor, yFactor;
+    xFactor = this->x - vertex->x;
+    xFactor *= xFactor;
+    yFactor = this->y - vertex->y;
+    yFactor *= yFactor;
+    return sqrt(xFactor + yFactor);
 }
 
 int Vertex::kNeighborsRoute(int k) {

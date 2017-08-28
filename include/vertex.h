@@ -27,8 +27,8 @@ class Vertex {
         void calcDistances(std::vector<Vertex>);
         void printDistances();
 
-        void setNeighborhood(Vertex* neighbors, int length);
-        double distanceTo(int vertex);
+        void setNeighborhood(Vertex *neighbors, int length);
+        double distanceTo(Vertex *vertex);
         int kNeighborsRoute(int k);
         int nearestDepot();
 };

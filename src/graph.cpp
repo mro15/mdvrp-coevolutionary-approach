@@ -1,39 +1,36 @@
 #include"graph.h"
 
-Graph::Graph(){
-    Vertex v(0, 0, 0, 0, 0, CUSTOMER);
-    this->vertices.push_back(v);
+Graph::Graph(int nCustomers, int nDepots){
+    this->nCustomers = nCustomers;
+    this->nDepots = nDepots;
+    this->nVertex = nCustomers + nDepots+1;
+    this->vertices = new Vertex*[nVertex];
+    this->matrix = new double*[nCustomers+nDepots+1];
+    for(int i=0; i<nVertex; ++i){
+        this->matrix[i]=new double[nVertex];
+    }
 }
 
-bool Graph::insertVertex(Vertex v){
-    this->vertices.push_back(v);
-    return true;
-}
 
 void Graph::debug(){
     std::cout << "Printing List" << std::endl;
-    for(std::vector<Vertex>::iterator i=this->vertices.begin()+1; i != vertices.end(); ++i){
-       (*i).debug();
+    for(int i=1; i < nVertex; ++i){
+       vertices[i]->debug();
     }
 }
 
-void Graph::printElem(int id){
-    std::cout << "id: " << id << " elem: " << this->vertices[id].rId() <<std::endl;
-}
-
-void Graph::calcDistances() {
-    for(std::vector<Vertex>::iterator i=this->vertices.begin() +1; i != this->vertices.end(); ++i) {
-        (*i).calcDistances(this->vertices);
-    }
-}
 
 void Graph::printDistances() {
-    for(std::vector<Vertex>::iterator i=this->vertices.begin() +1; i != this->vertices.end(); ++i) {
-        (*i).printDistances();
+    for(int i=1; i<nVertex; ++i){
+        for(int j=1; j<nVertex; ++j){
+            printf("%f ", this->matrix[i][j]);
+        }
+        printf("\n");
     }
 }
 
-bool Graph::addVertex() {
+
+bool Graph::addVertex(int id, double duration, double demand, double x, double y, int type) {
     /*
         Adds a vertex to the graph.
         Recieves the parameters used to create a Vertex object.
@@ -42,7 +39,13 @@ bool Graph::addVertex() {
 
         Try to add the same vertex twice (same id) retruns false.
     */
-    return true;
+    if (vertices[id] == NULL ) {
+        vertices[id] = new Vertex(id, duration, demand, x, y, type);
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 void Graph::buildEdges() {
     /*
@@ -53,6 +56,11 @@ void Graph::buildEdges() {
         an edge is create to each pair of vertices and the weight of this edge
         is set to the distance between then.
     */
+    for(int i=1; i<nVertex; ++i){
+        for(int j=1; j<nVertex; ++j){
+            this->matrix[i][j]=vertices[i]->distanceTo(vertices[j]);
+        }
+    }
     return;
 }
 

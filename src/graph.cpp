@@ -10,12 +10,21 @@
 Graph::Graph(int nCustomers, int nDepots){
     this->nCustomers = nCustomers;
     this->nDepots = nDepots;
-    this->nVertex = nCustomers + nDepots+1;
-    this->vertices = new Vertex*[nVertex];
+    this->nVertices = nCustomers + nDepots+1;
+    this->vertices = new Vertex*[nVertices];
     this->matrix = new double*[nCustomers+nDepots+1];
-    for(int i=0; i<nVertex; ++i){
-        this->matrix[i]=new double[nVertex];
+    for(int i=0; i<nVertices; ++i){
+        this->matrix[i]=new double[nVertices];
     }
+}
+
+Graph::~Graph() {
+    for(int i=0; i<nVertices; ++i){
+        delete[] this->matrix[i];
+        delete this->vertices[i];
+    }
+    delete[] this->matrix;
+    delete[] this->vertices;
 }
 
 
@@ -25,15 +34,15 @@ void Graph::debug(){
         Print all vertices position, demand and duration
     */
     std::cout << "Printing List" << std::endl;
-    for(int i=1; i < nVertex; ++i){
+    for(int i=1; i < nVertices; ++i){
        vertices[i]->debug();
     }
 }
 
 
 void Graph::printDistances() {
-    for(int i=1; i<nVertex; ++i){
-        for(int j=1; j<nVertex; ++j){
+    for(int i=1; i<nVertices; ++i){
+        for(int j=1; j<nVertices; ++j){
             printf("%f ", this->matrix[i][j]);
         }
         printf("\n");
@@ -67,13 +76,13 @@ void Graph::buildEdges() {
         an edge is create to each pair of vertices and the weight of this edge
         is set to the distance between then.
     */
-    for(int i=1; i<nVertex; ++i){
-        for(int j=1; j<nVertex; ++j){
+    for(int i=1; i<nVertices; ++i){
+        for(int j=1; j<nVertices; ++j){
             this->matrix[i][j]=vertices[i]->distanceTo(vertices[j]);
         }
     }
-    for (int i=1; i<nVertex; ++i) {
-        vertices[i]->setNeighborhood(vertices, this->matrix[i], nVertex);
+    for (int i=1; i<nVertices; ++i) {
+        vertices[i]->setNeighborhood(vertices, this->matrix[i], nVertices);
     }
     return;
 }
@@ -90,6 +99,9 @@ double Graph::distanceTo(int a, int b) {
         return 0.0 if a vertex is not found in the graph or if the ids are
         equal.
     */
+    if(a < nVertices && b < nVertices && a > -1 && b > -1) {
+        return this->vertices[a]->distanceTo(this->vertices[b]);
+    }
     return 0.0;
 }
 
@@ -104,7 +116,11 @@ bool Graph::setToRoute(int vertex, int route) {
 
         WARNING: This method does not checks if this route id is valid.
     */
-    return true;
+    if(vertex < nVertices && vertex > -1) {
+        this->vertices[vertex]->changeToRoute(route);
+        return true;
+    }
+    return false;
 }
 
 int Graph::kNeighborsRoute(int vertex, int k) {
@@ -119,6 +135,9 @@ int Graph::kNeighborsRoute(int vertex, int k) {
 
         returns 0 in error.
     */
+    if(vertex < nVertices && vertex > -1) {
+        return this->vertices[vertex]->kNeighborsRoute(k);
+    }
     return 0;
 }
 
@@ -128,5 +147,8 @@ void Graph::resetRoutes() {
 
         Set all the vertices to a default, unused route value, 0.
     */
-    return ;
+    for (int i = 0; i < this->nVertices; ++i) {
+        this->vertices[i]->changeToRoute(0);
+    }
+    return;
 }

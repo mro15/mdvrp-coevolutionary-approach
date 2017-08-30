@@ -17,27 +17,39 @@ int compare (const void* a, const void* b) {
 }
 
 Vertex::Vertex(int id, double duration, double demand, double x, double y, int type){
-   this->id = id;
+   this->_id = id;
    this->duration = duration;
    this->demand = demand;
    this->x = x;
    this->y = y;
    this->type = type;
+   this->workSpace = NULL;
+   this->sortedNeighbors = NULL;
+}
+
+Vertex::~Vertex() {
+    if(this->workSpace != NULL) {
+        delete[] this->workSpace;
+    }
+
+    if(this->sortedNeighbors != NULL) {
+        delete[] (this->sortedNeighbors -2);
+    }
 }
 
 void Vertex::debug() {
-    std::cout << "id: " << this->id << std::endl;
+    std::cout << "id: " << this->_id << std::endl;
     std::cout << "Position: x: " << this->x << " y: " << this->y << std::endl;
     std::cout << "Demand: " << this->demand << " Duration: " << this->duration << std::endl;
 }
 
-int Vertex::rId() {
-    return this->id;
+int Vertex::id() {
+    return this->_id;
 }
 
 void Vertex::printDistances() {
     for(std::vector<double>::iterator i=distances.begin() +1; i !=distances.end(); ++i) {
-        std::cout << id << " " << i - distances.begin() << " " << *i << std::endl;
+        std::cout << _id << " " << i - distances.begin() << " " << *i << std::endl;
     }
 }
 
@@ -70,7 +82,12 @@ void Vertex::setNeighborhood(Vertex** neighbors, double* distances, int length) 
     for (int i = 1; i < length; ++i) {
         sortedNeighbors[i] = neighbors[aux[i].id];
     }
-    sortedNeighbors[0] = NULL;
+    this->sortedNeighbors[0] = NULL;
+    this->sortedNeighbors = sortedNeighbors +2;
+    // Remove 0 that is null and 1 that is himself
+    this->nNeighbors = length -2;
+    this->workSpace = new int[this->nNeighbors];
+    delete[] aux;
     return;
 }
 
@@ -101,7 +118,23 @@ int Vertex::kNeighborsRoute(int k) {
 
         returns 0 in error.
     */
-    return 0;
+    for (int i = 0; i < nNeighbors && i < k; ++i) {
+        this->workSpace[i] = 0;
+    }
+
+    for (int i = 0; i < nNeighbors && i < k; ++i) {
+        ++this->workSpace[this->sortedNeighbors[i]->route];
+    }
+
+    int biggest = 0, value = this->workSpace[0];
+    for (int i = 1; i < nNeighbors && i < k; ++i) {
+        if (this->workSpace[i] > value) {
+            biggest = i;
+            value = this->workSpace[i];
+        }
+    }
+
+    return biggest;
 }
 
 int Vertex::nearestDepot() {
@@ -110,5 +143,21 @@ int Vertex::nearestDepot() {
 
         Just return the value of the atribute _nearestDepot
     */
-    return 0;
+    return _nearestDepot;
+}
+
+void Vertex::changeToRoute(int k) {
+    /*
+        Move a vertex to another route.
+        Parameters: k, route to move to.
+
+        Just change the value of the property route to the given parameter.
+
+        WARNING: This method does not create any connection with other objects
+        just act as a flag on this vertex. The value set here only affects
+        results of function like kNearestNeighbors, internal to the vertices.
+    */
+
+    this->route = k;
+    return;
 }

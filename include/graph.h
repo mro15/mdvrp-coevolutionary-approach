@@ -1,10 +1,9 @@
 #ifndef __GRAPH_H
 #define __GRAPH_H
 
-#include<iostream>
-#include<fstream>
-#include<vector>
-#include <cmath>
+#include <iostream>
+#include <fstream>
+#include <vector>
 
 #include <vertex.h>
 
@@ -14,9 +13,10 @@ class Graph {
         Vertex **vertices;
         int nCustomers;
         int nDepots;
-        int nVertex;
+        int nVertices;
     public:
         Graph(int nCustomers, int nDepots);
+        ~Graph();
         void debug();
         void printDistances();
 

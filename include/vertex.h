@@ -4,6 +4,7 @@
 #include<iostream>
 #include<fstream>
 #include<vector>
+#include <cstdlib>
 #include <cmath>
 
 #define CUSTOMER 1
@@ -15,7 +16,7 @@ class Vertex {
         double x, y, duration, demand;
         std::vector<double> distances;
 
-        int * sortedNeighbors;
+        Vertex ** sortedNeighbors;
         int route;
         int lastRoute;
         int maxVehicles;
@@ -27,7 +28,7 @@ class Vertex {
         void calcDistances(std::vector<Vertex>);
         void printDistances();
 
-        void setNeighborhood(Vertex *neighbors, int length);
+        void setNeighborhood(Vertex **neighbors, double* distances, int length);
         double distanceTo(Vertex *vertex);
         int kNeighborsRoute(int k);
         int nearestDepot();

@@ -7,6 +7,15 @@
 */
 #include <vertex.h>
 
+struct AuxSorting {
+    double distance;
+    int id;
+};
+
+int compare (const void* a, const void* b) {
+    return ((struct AuxSorting*) a)->distance - ((struct AuxSorting*) b)->distance;
+}
+
 Vertex::Vertex(int id, double duration, double demand, double x, double y, int type){
    this->id = id;
    this->duration = duration;
@@ -32,15 +41,36 @@ void Vertex::printDistances() {
     }
 }
 
-void Vertex::setNeighborhood(Vertex* neighbors, int length) {
+void Vertex::setNeighborhood(Vertex** neighbors, double* distances, int length) {
     /*
         Create the vertex neighborhood
-        Parameters: neighbors, array of verttices
+        Parameters: neighbors, array of vertices
+                    distances, distance to this vertex to the neighbors
                     length, size of that array
 
         Save the reference array and create the distances array, the
         sortedNeighbors array and the _nearestDepot.
     */
+
+    struct AuxSorting* aux = new struct AuxSorting[length];
+    int nearestDepot = -1;
+    double distanceToDepot = -1;
+    this->sortedNeighbors = new Vertex*[length];
+    for (int i =1; i < length; ++i) {
+        aux[i].distance = distances[i];
+        aux[i].id = i;
+        if (neighbors[i]->type == DEPOT && distanceToDepot > distances[i]) {
+            nearestDepot = i;
+            distanceToDepot = distances[i];
+        }
+    }
+    this->_nearestDepot = nearestDepot;
+    qsort(aux + 1, length -1, sizeof(struct AuxSorting), compare);
+
+    for (int i = 1; i < length; ++i) {
+        sortedNeighbors[i] = neighbors[aux[i].id];
+    }
+    sortedNeighbors[0] = NULL;
     return;
 }
 

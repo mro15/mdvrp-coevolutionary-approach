@@ -5,7 +5,7 @@
                     Marcela Ribeiro de Oliveira
     (NÃO SEI MAIS O QUE TEM QUE POR AQUI (?))
 */
-#include"graph.h"
+#include <graph.h>
 
 Graph::Graph(int nCustomers, int nDepots){
     this->nCustomers = nCustomers;
@@ -71,6 +71,9 @@ void Graph::buildEdges() {
         for(int j=1; j<nVertex; ++j){
             this->matrix[i][j]=vertices[i]->distanceTo(vertices[j]);
         }
+    }
+    for (int i=1; i<nVertex; ++i) {
+        vertices[i]->setNeighborhood(vertices, this->matrix[i], nVertex);
     }
     return;
 }

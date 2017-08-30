@@ -17,10 +17,7 @@ class Graph {
         int nVertex;
     public:
         Graph(int nCustomers, int nDepots);
-        bool insertVertex(Vertex v);
         void debug();
-        void printElem(int);
-        void calcDistances();
         void printDistances();
 
         bool addVertex(int id, double duration, double demand, double x, double y, int type);

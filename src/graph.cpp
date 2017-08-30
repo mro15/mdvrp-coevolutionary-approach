@@ -1,3 +1,10 @@
+/*  Universidade Federal do Paraná
+    Trabalho de Graduação
+    Orientador: Eduardo j. Spinosa
+    Implementação:  Lucas Fernandes de Oliveira
+                    Marcela Ribeiro de Oliveira
+    (NÃO SEI MAIS O QUE TEM QUE POR AQUI (?))
+*/
 #include"graph.h"
 
 Graph::Graph(int nCustomers, int nDepots){
@@ -13,6 +20,10 @@ Graph::Graph(int nCustomers, int nDepots){
 
 
 void Graph::debug(){
+    /*
+        Debug function
+        Print all vertices position, demand and duration
+    */
     std::cout << "Printing List" << std::endl;
     for(int i=1; i < nVertex; ++i){
        vertices[i]->debug();
@@ -69,7 +80,7 @@ double Graph::distanceTo(int a, int b) {
         Returns the distance between a pair of vertices.
         Parameters: a, id of a vertex in the the graph
                     b, id of a vertex in the graph
-        
+
         Recieves the ids, find the vertices and get the weight of the edge
         between they.
 
@@ -84,7 +95,7 @@ bool Graph::setToRoute(int vertex, int route) {
         Set a vertex to some route.
         Parameters: vertex, vertex id
                     route, the route id
-        
+
         Changes the value of the atribute route of the given vertex.
         Returns true if the vertex is found, false otherwise.
 

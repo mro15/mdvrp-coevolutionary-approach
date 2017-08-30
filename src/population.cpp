@@ -1,3 +1,10 @@
+/*  Universidade Federal do Paraná
+    Trabalho de Graduação
+    Orientador: Eduardo j. Spinosa
+    Implementação:  Lucas Fernandes de Oliveira
+                    Marcela Ribeiro de Oliveira
+    (NÃO SEI MAIS O QUE TEM QUE POR AQUI (?))
+*/
 #include <population.h>
 
 Population::Population(int depot, Operation& op, double maxDuration, Graph g) {
@@ -73,7 +80,7 @@ void Population::restart() {
 
         Removes the existent individuals and create a new random set using the
         clients added to this population.
-        
+
         Is literay call start and clear in sequence and just it.
     */
     return;
@@ -81,7 +88,7 @@ void Population::restart() {
 
 void Population::clear() {
     /*
-        Removes the existent individuals.    
+        Removes the existent individuals.
     */
     return;
 }

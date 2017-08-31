@@ -22,7 +22,7 @@ Vertex::Vertex(int id, double duration, double demand, double x, double y, int t
    this->demand = demand;
    this->x = x;
    this->y = y;
-   this->type = type;
+   this->_type = type;
    this->workSpace = NULL;
    this->sortedNeighbors = NULL;
 }
@@ -41,6 +41,7 @@ void Vertex::debug() {
     std::cout << "id: " << this->_id << std::endl;
     std::cout << "Position: x: " << this->x << " y: " << this->y << std::endl;
     std::cout << "Demand: " << this->demand << " Duration: " << this->duration << std::endl;
+    std::cout << "Depot: " << this->_nearestDepot << std::endl;
 }
 
 int Vertex::id() {
@@ -71,7 +72,8 @@ void Vertex::setNeighborhood(Vertex** neighbors, double* distances, int length) 
     for (int i =1; i < length; ++i) {
         aux[i].distance = distances[i];
         aux[i].id = i;
-        if (neighbors[i]->type == DEPOT && distanceToDepot > distances[i]) {
+        if (neighbors[i]->_type == DEPOT &&
+           (distanceToDepot > distances[i] || distanceToDepot == -1)) {
             nearestDepot = i;
             distanceToDepot = distances[i];
         }
@@ -160,4 +162,8 @@ void Vertex::changeToRoute(int k) {
 
     this->route = k;
     return;
+}
+
+int Vertex::type() {
+    return this->_type;
 }

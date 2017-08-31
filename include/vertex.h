@@ -12,7 +12,7 @@
 
 class Vertex {
     private:
-        int _id, type;
+        int _id, _type;
         double x, y, duration, demand;
         std::vector<double> distances;
 
@@ -35,6 +35,7 @@ class Vertex {
         int kNeighborsRoute(int k);
         int nearestDepot();
         void changeToRoute(int k);
+        int type();
 };
 
 #endif

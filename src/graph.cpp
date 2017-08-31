@@ -7,10 +7,13 @@
 */
 #include <graph.h>
 
-Graph::Graph(int nCustomers, int nDepots){
+Graph::Graph(int nCustomers, int nDepots, int maxVehicles){
     this->nCustomers = nCustomers;
     this->nDepots = nDepots;
+    this->maxVehicles = maxVehicles;
     this->nVertices = nCustomers + nDepots+1;
+    this->_depots = new int[nDepots];
+    this->_customers = new int[nCustomers];
     this->vertices = new Vertex*[nVertices];
     this->matrix = new double*[nCustomers+nDepots+1];
     for(int i=0; i<nVertices; ++i){
@@ -25,6 +28,8 @@ Graph::~Graph() {
     }
     delete[] this->matrix;
     delete[] this->vertices;
+    delete[] this->_depots;
+    delete[] this->_customers;
 }
 
 
@@ -76,9 +81,19 @@ void Graph::buildEdges() {
         an edge is create to each pair of vertices and the weight of this edge
         is set to the distance between then.
     */
+    int depotIndex = 0, customerIndex = 0;
     for(int i=1; i<nVertices; ++i){
         for(int j=1; j<nVertices; ++j){
             this->matrix[i][j]=vertices[i]->distanceTo(vertices[j]);
+        }
+        if (this->vertices[i]->type() == DEPOT) {
+            this->_depots[depotIndex] = i;
+            ++depotIndex;
+        }
+
+        else {
+            this->_customers[customerIndex] = i;
+            ++customerIndex;
         }
     }
     for (int i=1; i<nVertices; ++i) {
@@ -100,7 +115,7 @@ double Graph::distanceTo(int a, int b) {
         equal.
     */
     if(a < nVertices && b < nVertices && a > -1 && b > -1) {
-        return this->vertices[a]->distanceTo(this->vertices[b]);
+        return this->matrix[a][b];
     }
     return 0.0;
 }
@@ -151,4 +166,16 @@ void Graph::resetRoutes() {
         this->vertices[i]->changeToRoute(0);
     }
     return;
+}
+
+int* Graph::depots() {
+    return this->_depots;
+}
+
+int* Graph::customers() {
+    return this->_customers;
+}
+
+int** Graph::assigment() {
+    return NULL;
 }

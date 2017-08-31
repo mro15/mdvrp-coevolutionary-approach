@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
     input >> nDepots;
     input >> maxRouteDuration;
     input >> capacity;
-    Graph g(nCustomers, nDepots);
+    Graph g(nCustomers, nDepots, nVehicles);
     for(int i=0; i<nCustomers; ++i){
         int id, duration, demand;
         double x, y;

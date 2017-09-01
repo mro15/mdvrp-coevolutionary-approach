@@ -162,7 +162,7 @@ void Graph::resetRoutes() {
 
         Set all the vertices to a default, unused route value, 0.
     */
-    for (int i = 0; i < this->nVertices; ++i) {
+    for (int i = 1; i < this->nVertices; ++i) {
         this->vertices[i]->changeToRoute(0);
     }
     return;
@@ -177,5 +177,74 @@ int* Graph::customers() {
 }
 
 int** Graph::assigment() {
-    return NULL;
+    this->resetRoutes();
+    int nRoutes = this->nDepots * this->maxVehicles;
+    int **r = new int*[nRoutes];
+    for(int i = 0; i < nRoutes; ++i) {
+        r[i] = new int[this->nVertices];
+    }
+
+    for(int i = 0; i < this->nDepots; ++i) {
+        for(int j = 1; j < this->nVertices; ++j) {
+            if (this->vertices[j]->nearestDepot() == this->_depots[i]) {
+                r[i*this->maxVehicles][j] = 1;
+            }
+            else {
+                r[i*this->maxVehicles][j] = 0;
+            }
+        }
+    }
+
+
+    int* centers = new int[this->maxVehicles];
+    int* workSpace = new int[this->nVertices];
+    int centersLength = 0;
+    int index = 0;
+    int foundCenter = -1;
+    bool centerFounded = false;
+    for(int i = 0; i < this->nDepots; ++i) {
+        Vertex* depot = this->vertices[this->_depots[i]];
+        centers[0] = depot->furthest(depot->id(), 1);
+        centersLength = 1;
+        index = 1;
+        for(int j = 0; j < this->nVertices; ++j) {
+            workSpace[j] = 0;
+        }
+        while(centersLength < maxVehicles) {
+            for(int j = 0; j < centersLength; ++j) {
+                Vertex* v = this->vertices[centers[j]];
+                int furthest = v->furthest(depot->id(), index);
+                ++workSpace[furthest];
+                if (workSpace[furthest] == centersLength && !centerFounded) {
+                    foundCenter = furthest;
+                    centerFounded = true;
+                }
+            }
+
+            while (centerFounded && centersLength < maxVehicles) {
+                centerFounded = false;
+                centers[centersLength] = foundCenter;
+                ++centersLength;
+                for(int j = 1; j <= index; ++j) {
+                    Vertex* v = this->vertices[foundCenter];
+                    int furthest = v->furthest(depot->id(), j);
+                    ++workSpace[furthest];
+                    if (workSpace[furthest] == centersLength && !centerFounded) {
+                        foundCenter = furthest;
+                        centerFounded = true;
+                    }
+                }
+            }
+
+            ++index;
+        }
+
+        printf("Depot %d: [%d", this->_depots[i], centers[0]);
+        for(int i = 1; i < centersLength; ++i) {
+            printf(", %d", centers[i]);
+        }
+        printf("]\n");
+    }
+
+    return r;
 }

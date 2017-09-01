@@ -48,6 +48,7 @@ int main(int argc, char* argv[]){
     g.debug();
     //g.calcDistances();
     g.printDistances();
+    g.assigment();
     return 0;
 }
 

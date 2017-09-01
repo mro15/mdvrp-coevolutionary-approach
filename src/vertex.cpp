@@ -167,3 +167,33 @@ void Vertex::changeToRoute(int k) {
 int Vertex::type() {
     return this->_type;
 }
+
+int Vertex::furthest(int depot, int index) {
+    /*
+        Returns the furthest customer, assigned to the depot.
+        Paramater: depot, depot id
+                   index, how much further. 1 = 1st futhest, 2 = 2nd furthest, ...
+    */
+   
+    int count = 1;
+    printf("----------------------------------{%d}{%d}{%d}\n", this->_id, index, depot);
+    printf("[%d", this->sortedNeighbors[0]->_id);
+    for(int i = 1; i < this->nNeighbors; ++i) {
+        printf(", %d", this->sortedNeighbors[i]->_id);
+    }
+    printf("]\n");
+    for(int i = nNeighbors -1; i >= 0; --i) {
+        Vertex* v = this->sortedNeighbors[i];
+        printf("{%d}--{%d}--{%d}\n", v->_id, v->_type, v->_nearestDepot);
+        if(v->_type != DEPOT && v->_nearestDepot == depot) {
+            if (count == index) {
+                return v->_id;
+            }
+            else {
+                ++count;
+            }
+        }
+    }
+
+    return -1;
+}

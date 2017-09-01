@@ -36,6 +36,7 @@ class Vertex {
         int nearestDepot();
         void changeToRoute(int k);
         int type();
+        int furthest(int depot, int index);
 };
 
 #endif

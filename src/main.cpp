@@ -45,10 +45,11 @@ int main(int argc, char* argv[]){
     }
     g.buildEdges();
     //debug function
-    g.debug();
+    //g.debug();
     //g.calcDistances();
-    g.printDistances();
-    g.assigment();
+    //g.printDistances();
+    g.assignment();
+    g.debug();
     return 0;
 }
 

@@ -44,10 +44,9 @@ Vertex::~Vertex() {
 }
 
 void Vertex::debug() {
-    std::cout << "id: " << this->_id << std::endl;
-    std::cout << "Position: x: " << this->x << " y: " << this->y << std::endl;
-    std::cout << "Demand: " << this->demand << " Duration: " << this->duration << std::endl;
-    std::cout << "Depot: " << this->_nearestDepot << std::endl;
+    //std::cout << "id: " << this->_id;
+    std::cout << "x: " << this->x << " y: " << this->y;
+    std::cout << " route: " << this->route << ":" <<std::endl;
 }
 
 int Vertex::id() {

@@ -32,7 +32,7 @@ class Graph {
         void resetRoutes();
         int* depots();
         int* customers();
-        int** assigment();
+        int** assignment();
 };
 
 #endif

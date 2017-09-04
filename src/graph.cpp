@@ -38,7 +38,7 @@ void Graph::debug(){
         Debug function
         Print all vertices position, demand and duration
     */
-    std::cout << "Printing List" << std::endl;
+    // std::cout << "Printing List" << std::endl;
     for(int i=1; i < nVertices; ++i){
        vertices[i]->debug();
     }
@@ -176,7 +176,7 @@ int* Graph::customers() {
     return this->_customers;
 }
 
-int** Graph::assigment() {
+int** Graph::assignment() {
     this->resetRoutes();
     int nRoutes = this->nDepots * this->maxVehicles;
     int **r = new int*[nRoutes];
@@ -258,7 +258,6 @@ int** Graph::assigment() {
                 }
                 else {
                     this->vertices[vertex]->changeToRoute(i*maxVehicles+k +1);
-                    printf("(%d, %d)\n", vertex,i*maxVehicles+k);
                     r[i*maxVehicles][vertex] = 0;
                     r[i*maxVehicles+k][vertex] = 1;
                 }
@@ -269,12 +268,12 @@ int** Graph::assigment() {
         r[i*maxVehicles][this->_depots[i]] = 0;
         depot->changeToRoute(0);
     }
-    for(int k = 0; k < this->nDepots*maxVehicles; ++k) {
+    /*for(int k = 0; k < this->nDepots*maxVehicles; ++k) {
         printf("(%d)[%d", k+1, r[k][1]);
         for(int j = 2; j < this->nVertices; ++j) {
             printf(", %d", r[k][j]);
         }
         printf("]\n");
-    }
+    }*/
     return r;
 }

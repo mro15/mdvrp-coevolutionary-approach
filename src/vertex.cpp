@@ -13,10 +13,10 @@ struct AuxSorting {
 };
 
 int compare (const void* a, const void* b) {
-    if((((struct AuxSorting*) a)->distance - ((struct AuxSorting*) b)->distance)<0){
-        return -1;
-    }else if((((struct AuxSorting*) a)->distance - ((struct AuxSorting*) b)->distance)>0){
+    if(((struct AuxSorting*) a)->distance > ((struct AuxSorting*) b)->distance){
         return 1;
+    }else if(((struct AuxSorting*) a)->distance - ((struct AuxSorting*) b)->distance){
+        return -1;
     }else{
         return 0;
     }
@@ -181,15 +181,15 @@ int Vertex::furthest(int depot, int index) {
                    index, how much further. 1 = 1st futhest, 2 = 2nd furthest, ...
     */
     int count = 1;
-    printf("----------------------------------{%d}{%d}{%d}\n", this->_id, index, depot);
+   /* printf("----------------------------------{%d}{%d}{%d}\n", this->_id, index, depot);
     printf("[%d", this->sortedNeighbors[0]->_id);
     for(int i = 1; i < this->nNeighbors; ++i) {
         printf(", %d", this->sortedNeighbors[i]->_id);
     }
-    printf("]\n");
+    printf("]\n");*/
     for(int i = nNeighbors -1; i >= 0; --i) {
         Vertex* v = this->sortedNeighbors[i];
-        printf("{%d}--{%d}--{%d}\n", v->_id, v->_type, v->_nearestDepot);
+        //printf("{%d}--{%d}--{%d}\n", v->_id, v->_type, v->_nearestDepot);
         if(v->_type != DEPOT && v->_nearestDepot == depot) {
             if (count == index) {
                 return v->_id;

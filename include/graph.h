@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <vertex.h>
+#include <cstdlib>
 
 class Graph {
     private:

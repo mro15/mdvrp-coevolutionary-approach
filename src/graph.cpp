@@ -182,6 +182,9 @@ int** Graph::assigment() {
     int **r = new int*[nRoutes];
     for(int i = 0; i < nRoutes; ++i) {
         r[i] = new int[this->nVertices];
+        for(int j = 1; j < this->nVertices; ++j) {
+            r[i][j] = 0;
+        }
     }
 
     for(int i = 0; i < this->nDepots; ++i) {
@@ -239,12 +242,39 @@ int** Graph::assigment() {
             ++index;
         }
 
-        printf("Depot %d: [%d", this->_depots[i], centers[0]);
-        for(int i = 1; i < centersLength; ++i) {
-            printf(", %d", centers[i]);
+        for(int k = 0; k < centersLength; ++k) {
+            this->vertices[centers[k]]->changeToRoute(i*maxVehicles+k +1);
+            r[i*maxVehicles][centers[k]] = 0;
+            r[i*maxVehicles+k][centers[k]] = 1;
+        }
+
+        bool allAssigned = false;
+        while (!allAssigned) {
+            for(int k = 0; k < centersLength; ++k) {
+                int vertex = this->vertices[centers[k]]->nearest(depot->id());
+                if(vertex == -1) {
+                    allAssigned = true;
+                    k = centersLength;
+                }
+                else {
+                    this->vertices[vertex]->changeToRoute(i*maxVehicles+k +1);
+                    printf("(%d, %d)\n", vertex,i*maxVehicles+k);
+                    r[i*maxVehicles][vertex] = 0;
+                    r[i*maxVehicles+k][vertex] = 1;
+                }
+
+            }
+        }
+
+        r[i*maxVehicles][this->_depots[i]] = 0;
+        depot->changeToRoute(0);
+    }
+    for(int k = 0; k < this->nDepots*maxVehicles; ++k) {
+        printf("(%d)[%d", k+1, r[k][1]);
+        for(int j = 2; j < this->nVertices; ++j) {
+            printf(", %d", r[k][j]);
         }
         printf("]\n");
     }
-
     return r;
 }

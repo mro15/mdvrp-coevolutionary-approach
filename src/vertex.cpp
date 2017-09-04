@@ -13,7 +13,13 @@ struct AuxSorting {
 };
 
 int compare (const void* a, const void* b) {
-    return ((struct AuxSorting*) a)->distance - ((struct AuxSorting*) b)->distance;
+    if((((struct AuxSorting*) a)->distance - ((struct AuxSorting*) b)->distance)<0){
+        return -1;
+    }else if((((struct AuxSorting*) a)->distance - ((struct AuxSorting*) b)->distance)>0){
+        return 1;
+    }else{
+        return 0;
+    }
 }
 
 Vertex::Vertex(int id, double duration, double demand, double x, double y, int type){
@@ -174,7 +180,6 @@ int Vertex::furthest(int depot, int index) {
         Paramater: depot, depot id
                    index, how much further. 1 = 1st futhest, 2 = 2nd furthest, ...
     */
-   
     int count = 1;
     printf("----------------------------------{%d}{%d}{%d}\n", this->_id, index, depot);
     printf("[%d", this->sortedNeighbors[0]->_id);

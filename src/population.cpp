@@ -1,7 +1,17 @@
+/*  Universidade Federal do Paraná
+    Trabalho de Graduação
+    Orientador: Eduardo j. Spinosa
+    Implementação:  Lucas Fernandes de Oliveira
+                    Marcela Ribeiro de Oliveira
+    (NÃO SEI MAIS O QUE TEM QUE POR AQUI (?))
+*/
 #include <population.h>
 
-Population::Population(int depot, Operation& op, double maxDuration, Graph g) {
-
+Population::Population(int id, Graph& g, Operation& op, int depot, double maxDuration):
+                       operation(op), graph(g) {
+    this->_id = id;
+    this->depot = depot;
+    this->maxDuration = maxDuration;
 }
 
 Individual* Population::iterate() {
@@ -21,10 +31,10 @@ Individual* Population::iterate() {
     return NULL;
 }
 
-bool Population::addClient(int id) {
+bool Population::addClient(int vertex) {
     /*
         Adds a client to this population.
-        Parameters: id, id of vertex, tha is a client in the Graph g.
+        Parameters: vertex, id of vertex, tha is a client in the Graph g.
 
         Adds a vertex to be handled by this population, in other words the
         routes created by this population WILL include the client added to it.
@@ -37,7 +47,16 @@ bool Population::addClient(int id) {
         WARNING: This method does NOT verify if the client is in other
         Populations.
     */
-    return true;
+    for (std::vector<int>::iterator it = clients.begin() ; it != clients.end(); ++it) {
+        if(*it == vertex) {
+            return false;
+        }
+    }
+    if (graph.setToRoute(vertex, this->_id)) {
+        clients.push_back(vertex);
+        return true;
+    }
+    return false;
 }
 
 bool Population::removeClient(int id) {
@@ -73,7 +92,7 @@ void Population::restart() {
 
         Removes the existent individuals and create a new random set using the
         clients added to this population.
-        
+
         Is literay call start and clear in sequence and just it.
     */
     return;
@@ -81,7 +100,7 @@ void Population::restart() {
 
 void Population::clear() {
     /*
-        Removes the existent individuals.    
+        Removes the existent individuals.
     */
     return;
 }

@@ -46,30 +46,39 @@ for i in $instances; do
     echo "plot \\" >> ../plot/$i.plot
     ../main ../instances/$i > tmp.out
     max=$(cat tmp.out | cut -d: -f4 | sort -n | sed -e "s/^ //"| tail -n1)
-    depots=$(cat tmp.out | cut -d: -f4 | grep "0" | wc -l)
-    vehicles=$(( $max/$depots))
+    depots=$(cat tmp.out | cut -d: -f4 | grep "^ 0" | wc -l)
+    vehicles=$(($max/$depots))
     inc=0
     count=0
-    for j in $(seq 0 $max); do
-        rvalue=$((${r[j]} + $inc))
-        gvalue=$((${g[j]} + $inc))
-        bvalue=$((${b[j]} + $inc))
+    colorid=0
+    rvalue=$((${r[0]} + $inc))
+    gvalue=$((${g[0]} + $inc))
+    bvalue=$((${b[0]} + $inc))
+    color=$(printf "#%02X%02X%02X" $rvalue $gvalue $bvalue)
+    echo "'-' using 1 : 2 with points lc rgbcolor \"$color\" lw \"3px\" title 'Depots', \\"\
+     >> ../plot/$i.plot
+    colorid=1
+    for j in $(seq 1 $max); do
+        rvalue=$((${r[$colorid]} + $inc))
+        gvalue=$((${g[$colorid]} + $inc))
+        bvalue=$((${b[$colorid]} + $inc))
         color=$(printf "#%02X%02X%02X" $rvalue $gvalue $bvalue)
-        echo -n "'-' using 1 : 2 with points lc rgbcolor \"$color\" lw \"2px\" title 'route $j'"\
+        echo -n "'-' using 1 : 2 with points lc rgbcolor \"$color\" lw \"3px\" title 'route $j'"\
              >> ../plot/$i.plot
         if [[ $j -eq $max ]]; then
             echo "" >> ../plot/$i.plot
         else
             echo ",  \\"     >> ../plot/$i.plot
         fi
-        inc=$(( $inc + 16))
+        inc=$(( $inc + 32))
         count=$(( $count + 1))
-        if [[ $j -eq $max ]]; then
+        if [[ $count -eq $vehicles ]]; then
             inc=0
             count=0
+            colorid=$(($colorid +1))
         fi
         #cat tmp.out | grep "route: $j" | sed -e "s/x:\ //" | \
-        #   sed -e "s/y:\ //" | sed -e "s/route: $j//" 
+        #   sed -e "s/y:\ //" | sed -e "s/route: $j//"
     done
     echo >> ../plot/$i.plot
     for j in $(seq 0 $max); do
@@ -81,3 +90,5 @@ for i in $instances; do
     done
 
 done
+
+rm tmp.out

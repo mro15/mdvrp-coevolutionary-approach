@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -O0
+CFLAGS = -Wall -O0 -g
 
 INCL = -I./include
 

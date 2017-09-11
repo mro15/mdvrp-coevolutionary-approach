@@ -89,10 +89,10 @@ void Population::start() {
 
     individuals = new Individual*[this->_nIndividuals];
     for(int i = 0; i < this->_nIndividuals; i++) {
-        int permutation = 0;
+        int* permutation = NULL;
         // TODO: criar permutação
 
-        individuals[i] = new Individual(&permutation, this->depot, this->maxDuration, graph);
+        individuals[i] = new Individual(permutation, this->depot, this->maxDuration, graph);
     }
     return;
 }

@@ -45,11 +45,8 @@ int main(int argc, char* argv[]){
         g.addVertex(id, duration, demand, x, y, DEPOT);
     }
     g.buildEdges();
+    g.assignment();
     //debug function
-    //g.debug();
-    //g.calcDistances();
-    //g.printDistances();
-    //g.assignment();
     //g.debug();
     Operation op(NULL, NULL, NULL);
     MDVRPSolver solver(op);

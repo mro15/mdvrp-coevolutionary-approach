@@ -236,9 +236,6 @@ int** Graph::assignment() {
                 }
                 else {
                     ++workSpace[furthest];
-                    /*if(centersLength == 1) {
-                        printf("FUR00: %d, %d\n", furthest, workSpace[furthest]);
-                    }*/
                     if (workSpace[furthest] == centersLength && !centerFounded) {
                         foundCenter = furthest;
                         centerFounded = true;
@@ -249,9 +246,6 @@ int** Graph::assignment() {
             while (centerFounded && centersLength < _maxVehicles) {
                 centerFounded = false;
                 centers[centersLength] = foundCenter;
-                /*if(centersLength == 1) {
-                    printf("FUR11: %d\n", centers[centersLength]);
-                }*/
                 ++centersLength;
                 for(int j = 1; j <= index; ++j) {
                     Vertex* v = this->vertices[foundCenter];
@@ -273,9 +267,6 @@ int** Graph::assignment() {
         }
 
         for(int k = 0; k < centersLength; ++k) {
-            /*if(centers[k] == 10) {
-                printf("%d OK OKDO\n", k);
-            }*/
             this->vertices[centers[k]]->changeToRoute(i*_maxVehicles+k +1);
             r[i*_maxVehicles][centers[k]] = 0;
             r[i*_maxVehicles+k][centers[k]] = 1;
@@ -290,9 +281,6 @@ int** Graph::assignment() {
                     k = centersLength;
                 }
                 else {
-                    /*if(vertex == 10) {
-                        printf("1111111111\n");
-                    }*/
                     this->vertices[vertex]->changeToRoute(i*_maxVehicles+k +1);
                     r[i*_maxVehicles][vertex] = 0;
                     r[i*_maxVehicles+k][vertex] = 1;

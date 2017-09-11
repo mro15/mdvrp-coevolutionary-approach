@@ -7,11 +7,13 @@
 */
 #include <population.h>
 
-Population::Population(int id, Graph& g, Operation& op, int depot, double maxDuration):
+Population::Population(int id, Graph& g, Operation& op, int depot, double maxDuration, int nIndividuals):
                        operation(op), graph(g) {
     this->_id = id;
     this->depot = depot;
     this->maxDuration = maxDuration;
+    this->individuals = NULL;
+    this->_nIndividuals = nIndividuals;
 }
 
 Individual* Population::iterate() {
@@ -81,8 +83,17 @@ void Population::start() {
         Using the clients added create a set of random individuals and
         add than to the individuals set.
 
-        WARNING: This function does NOT remove the exisent individuals.
+        WARNING: This function assumes that individuals is NULL or
+        clear has been called before.
     */
+
+    individuals = new Individual*[this->_nIndividuals];
+    for(int i = 0; i < this->_nIndividuals; i++) {
+        int permutation = 0;
+        // TODO: criar permutação
+
+        individuals[i] = new Individual(&permutation, this->depot, this->maxDuration, graph);
+    }
     return;
 }
 
@@ -95,6 +106,9 @@ void Population::restart() {
 
         Is literay call start and clear in sequence and just it.
     */
+    this->clear();
+    this->start();
+
     return;
 }
 
@@ -102,6 +116,10 @@ void Population::clear() {
     /*
         Removes the existent individuals.
     */
+    for(int i = 0; i < this->_nIndividuals; i++) {
+        delete individuals[i];
+    }
+    delete[] individuals;
     return;
 }
 

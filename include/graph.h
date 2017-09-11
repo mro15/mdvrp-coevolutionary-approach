@@ -13,13 +13,13 @@ class Graph {
         double **matrix;
         Vertex **vertices;
         int nCustomers;
-        int nDepots;
-        int nVertices;
+        int _nDepots;
+        int _nVertices;
         int* _customers;
         int* _depots;
-        int maxVehicles;
+        int _maxVehicles;
     public:
-        Graph(int nCustomers, int nDepots, int maxVehicles);
+        Graph(int nCustomers, int nDepots, int _maxVehicles);
         ~Graph();
         void debug();
         void printDistances();
@@ -33,6 +33,9 @@ class Graph {
         int* depots();
         int* customers();
         int** assignment();
+        int nVertices();
+        int nDepots();
+        int maxVehicles();
 };
 
 #endif

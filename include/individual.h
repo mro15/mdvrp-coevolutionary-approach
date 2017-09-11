@@ -10,7 +10,7 @@ class Individual {
         double maxDuration;
         int* route;
     public:
-        Individual(int* clients, int depot, double maxDuration, Graph g);
+        Individual(int* clients, int depot, double maxDuration, Graph& g);
         int badClient();
         double fitness();
         bool feasible();

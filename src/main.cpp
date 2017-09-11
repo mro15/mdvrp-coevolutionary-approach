@@ -6,9 +6,10 @@
     (NÃO SEI MAIS O QUE TEM QUE POR AQUI (?))
 */
 
-#include<iostream>
-#include<fstream>
-#include"graph.h"
+#include <iostream>
+#include <fstream>
+#include "graph.h"
+#include <solver.h>
 
 int main(int argc, char* argv[]){
     int nCustomers, nDepots, nVehicles;
@@ -48,8 +49,11 @@ int main(int argc, char* argv[]){
     //g.debug();
     //g.calcDistances();
     //g.printDistances();
-    g.assignment();
-    g.debug();
+    //g.assignment();
+    //g.debug();
+    Operation op(NULL, NULL, NULL);
+    MDVRPSolver solver(op);
+    solver.solve(g, maxRouteDuration, 10, 1000, 10);
     return 0;
 }
 

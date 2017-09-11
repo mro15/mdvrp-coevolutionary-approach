@@ -7,8 +7,7 @@
 */
 #include <individual.h>
 
-Individual::Individual(int* clients, int depot, double maxDuration, Graph g) {
-
+Individual::Individual(int* clients, int depot, double maxDuration, Graph& g) {
 }
 
 int Individual::badClient() {

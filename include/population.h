@@ -5,17 +5,18 @@
 #include <individual.h>
 #include <operation.h>
 #include <vector>
+#include <algorithm>
 
 class Population {
     private:
-        Individual* individuals;
+        Individual** individuals;
         Operation& operation;
         Graph& graph;
         std::vector<int> clients;
-        int depot, _id;
+        int depot, _id, _nIndividuals;
         double maxDuration;
     public:
-        Population(int id, Graph& g, Operation& op, int depot, double maxDuration);
+        Population(int id, Graph& g, Operation& op, int depot, double maxDuration, int nIndividuals);
         Individual* iterate();
         bool addClient(int id);
         bool removeClient(int id);

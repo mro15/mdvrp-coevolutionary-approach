@@ -7,21 +7,22 @@
 */
 #include <population.h>
 
-Population::Population(int id, Graph& g, Operation& op, int depot, double maxDuration, int nIndividuals):
+Population::Population(int id, Graph& g, Operation& op, int depot, double maxDuration, double capacity, int nIndividuals):
                        operation(op), graph(g) {
     this->_id = id;
     this->depot = depot;
     this->maxDuration = maxDuration;
     this->individuals = NULL;
     this->_nIndividuals = nIndividuals;
+    this->capacity = capacity;
 }
 
 Individual* Population::iterate() {
     /*
         Executes one iteration of the solve method for this population
 
-        One iteration means progess the solving process one step.
-        In this case, an evlutionary algorithm, is apply the three operations
+        One iteration means progress the solving process one step.
+        In this case, an evolutionary algorithm, is apply the three operations
         in the individuals of this population that is, selection, cross-over
         than mutation, in this order.
 
@@ -30,6 +31,19 @@ Individual* Population::iterate() {
 
         Retuns the best individual of the new generation, NULL in case of error.
     */
+
+    /*pais = op.select(individuals);
+    offspring = [];
+    for(pais) {
+        filhos = op.crossover(pais[i])
+        offspring = offspring + filhos;
+    }
+    for(offspring) {
+        op.mutate(offsprintg[i]);
+    }
+
+    individuals = offspring*/
+
     return NULL;
 }
 
@@ -73,7 +87,20 @@ bool Population::removeClient(int id) {
 
         False can be retured for a inexistent vertex;
     */
-    return true;
+    std::vector<int>::iterator toRemove;
+    bool find = false;
+    for (std::vector<int>::iterator it = clients.begin() ; it != clients.end(); ++it) {
+        if(*it == id) {
+            toRemove = it;
+            find = true;
+        }
+    }
+    if (find) {
+        clients.erase(toRemove);
+        return true;
+    }
+
+    return false;
 }
 
 void Population::start() {
@@ -94,7 +121,7 @@ void Population::start() {
         for(std::vector<int>::iterator j = clients.begin(); j != clients.end(); ++j) {
             permutation[j - clients.begin()] = *j;
         }
-        individuals[i] = new Individual(permutation, clients.size(), this->depot, this->maxDuration, graph);
+        individuals[i] = new Individual(permutation, clients.size(), this->depot, this->maxDuration, this->capacity, graph);
     }
     return;
 }

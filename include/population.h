@@ -14,9 +14,9 @@ class Population {
         Graph& graph;
         std::vector<int> clients;
         int depot, _id, _nIndividuals;
-        double maxDuration;
+        double maxDuration, capacity;
     public:
-        Population(int id, Graph& g, Operation& op, int depot, double maxDuration, int nIndividuals);
+        Population(int id, Graph& g, Operation& op, int depot, double maxDuration, double capacity, int nIndividuals);
         Individual* iterate();
         bool addClient(int id);
         bool removeClient(int id);

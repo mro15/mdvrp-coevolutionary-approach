@@ -14,7 +14,8 @@ MDVRPSolver::MDVRPSolver(Operation& op): operation(op) {
 }
 
 int* MDVRPSolver::solve( Graph& g,
-                         int maxDuration,
+                         double maxDuration,
+                         double capacity,
                          int iterations,
                          int itToMigrate,
                          int nIndividuals) {
@@ -33,7 +34,7 @@ int* MDVRPSolver::solve( Graph& g,
 
         returns NULL in error or impossibility to solve.
     */
-    Population ** population = this->initPopulations(g, maxDuration, nIndividuals);
+    Population ** population = this->initPopulations(g, maxDuration, capacity, nIndividuals);
     int length = g.nDepots()*g.maxVehicles() +1;
     for(int i = 1; i < length; ++i) {
         population[i]->start();
@@ -48,7 +49,7 @@ int* MDVRPSolver::solve( Graph& g,
     return NULL;
 }
 
-Population** MDVRPSolver::initPopulations(Graph& g, int maxDuration, int nIndividuals) {
+Population** MDVRPSolver::initPopulations(Graph& g, double maxDuration, double capacity, int nIndividuals) {
     /*
         Creates a set of Populations and initializes it with some clients
         but 0 individuals.
@@ -68,7 +69,7 @@ Population** MDVRPSolver::initPopulations(Graph& g, int maxDuration, int nIndivi
     for (int i = 0; i < nDepots; ++i) {
         for(int j = 0; j < nVehicles; ++j) {
             int index = i*nVehicles + j +1;
-            r[index] = new Population(index, g, this->operation, depots[i], maxDuration, nIndividuals);
+            r[index] = new Population(index, g, this->operation, depots[i], maxDuration, capacity, nIndividuals);
             for(int k = 0; k < g.nVertices(); ++k) {
                 if(assignment[index -1][k] == 1) {
                     r[index]->addClient(k);

@@ -7,16 +7,22 @@
 */
 #include <individual.h>
 
-Individual::Individual(int* clients, int size, int depot, double maxDuration, Graph& g) {
+Individual::Individual(int* clients, int size, int depot, double maxDuration, double capacity, Graph& g) {
     /*printf("[%d", clients[0]);
     for(int i = 1; i < size; ++i) {
         printf(", %d", clients[i]);
     }
     printf("];\n");*/
 
-    /*for(int i = 0; i < size; ++i) {
-        printf(", %d", clients[i]);
-    }*/
+    _clients = new int [size];
+    for(int i = 0; i < size; ++i) {
+        _clients[i] = clients[i];
+    }
+
+    _size = size;
+    _depot = depot;
+    _maxDuration = maxDuration;
+    _capacity = capacity;
 }
 
 int Individual::badClient() {

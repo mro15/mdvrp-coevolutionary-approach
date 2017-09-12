@@ -50,7 +50,7 @@ int main(int argc, char* argv[]){
     //g.debug();
     Operation op(NULL, NULL, NULL);
     MDVRPSolver solver(op);
-    solver.solve(g, maxRouteDuration, 10, 1000, 10);
+    solver.solve(g, maxRouteDuration, capacity, 10, 1000, 10);
     return 0;
 }
 

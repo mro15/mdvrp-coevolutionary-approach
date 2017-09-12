@@ -94,8 +94,6 @@ void Population::start() {
         for(std::vector<int>::iterator j = clients.begin(); j != clients.end(); ++j) {
             permutation[j - clients.begin()] = *j;
         }
-        // TODO: criar permutação
-
         individuals[i] = new Individual(permutation, clients.size(), this->depot, this->maxDuration, graph);
     }
     return;

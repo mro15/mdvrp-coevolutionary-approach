@@ -8,15 +8,15 @@
 #include <individual.h>
 
 Individual::Individual(int* clients, int size, int depot, double maxDuration, Graph& g) {
-    printf("[%d", clients[0]);
+    /*printf("[%d", clients[0]);
     for(int i = 1; i < size; ++i) {
         printf(", %d", clients[i]);
     }
-    printf("];\n");
+    printf("];\n");*/
 
-    for(int i = 0; i < size; ++i) {
+    /*for(int i = 0; i < size; ++i) {
         printf(", %d", clients[i]);
-    }
+    }*/
 }
 
 int Individual::badClient() {

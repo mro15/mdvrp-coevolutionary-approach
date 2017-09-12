@@ -292,7 +292,12 @@ int** Graph::assignment() {
         r[i*_maxVehicles][this->_depots[i]] = 0;
         depot->changeToRoute(0);
     }
-    /*for(int k = 0; k < this->_nDepots*_maxVehicles; ++k) {
+    /*printf("(%d)[%d", 0, 1);
+    for(int j = 2; j < this->_nVertices; ++j) {
+        printf(", %d", j);
+    }
+    printf("]\n");
+    for(int k = 0; k < this->_nDepots*_maxVehicles; ++k) {
         printf("(%d)[%d", k+1, r[k][1]);
         for(int j = 2; j < this->_nVertices; ++j) {
             printf(", %d", r[k][j]);

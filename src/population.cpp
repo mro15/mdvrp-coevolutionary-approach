@@ -89,10 +89,14 @@ void Population::start() {
 
     individuals = new Individual*[this->_nIndividuals];
     for(int i = 0; i < this->_nIndividuals; i++) {
-        int permutation = 0;
+        int *permutation = new int[clients.size()];
+        random_shuffle(clients.begin(), clients.end());
+        for(std::vector<int>::iterator j = clients.begin(); j != clients.end(); ++j) {
+            permutation[j - clients.begin()] = *j;
+        }
         // TODO: criar permutação
 
-        individuals[i] = new Individual(&permutation, this->depot, this->maxDuration, graph);
+        individuals[i] = new Individual(permutation, clients.size(), this->depot, this->maxDuration, graph);
     }
     return;
 }

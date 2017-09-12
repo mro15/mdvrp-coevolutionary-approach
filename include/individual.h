@@ -5,12 +5,12 @@
 
 class Individual {
     private:
-        int* clients;
-        int depot;
-        double maxDuration;
-        int* route;
+        int* _clients;
+        int _depot;
+        double _maxDuration;
+        int* _route;
     public:
-        Individual(int* clients, int depot, double maxDuration, Graph& g);
+        Individual(int* clients, int size, int depot, double maxDuration, Graph& g);
         int badClient();
         double fitness();
         bool feasible();

@@ -10,6 +10,7 @@
 #include <fstream>
 #include "graph.h"
 #include <solver.h>
+#include <operators.h>
 
 int main(int argc, char* argv[]){
     int nCustomers, nDepots, nVehicles;
@@ -48,7 +49,11 @@ int main(int argc, char* argv[]){
     //g.assignment();
     //debug function
     //g.debug();
-    Operation op(NULL, NULL, NULL);
+    MutSwap mutOp(0.1);
+    CrCut crOp;
+    SelRol selOp;
+
+    Operation op(mutOp, crOp, selOp);
     MDVRPSolver solver(op);
     solver.solve(g, maxRouteDuration, capacity, 10, 1000, 10);
     return 0;

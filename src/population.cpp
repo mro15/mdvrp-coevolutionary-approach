@@ -32,9 +32,11 @@ Individual* Population::iterate() {
         Retuns the best individual of the new generation, NULL in case of error.
     */
 
-    /*pais = op.select(individuals);
-    offspring = [];
-    for(pais) {
+    /*for (int i = 0; i < this->_nIndividuals; ++i) {
+        Individual** parents = operation.select(this->_individuals);
+    }
+    Individual** offspring = new Individual*[this->_nIndividuals];
+    for() {
         filhos = op.crossover(pais[i])
         offspring = offspring + filhos;
     }
@@ -42,8 +44,8 @@ Individual* Population::iterate() {
         op.mutate(offsprintg[i]);
     }
 
-    individuals = offspring*/
-
+    individuals = offspring
+*/
     return NULL;
 }
 
@@ -116,12 +118,9 @@ void Population::start() {
 
     individuals = new Individual*[this->_nIndividuals];
     for(int i = 0; i < this->_nIndividuals; i++) {
-        int *permutation = new int[clients.size()];
-        random_shuffle(clients.begin(), clients.end());
-        for(std::vector<int>::iterator j = clients.begin(); j != clients.end(); ++j) {
-            permutation[j - clients.begin()] = *j;
-        }
-        individuals[i] = new Individual(permutation, clients.size(), this->depot, this->maxDuration, this->capacity, graph);
+        std::vector<int> permutation(clients);
+        random_shuffle(permutation.begin(), permutation.end());
+        individuals[i] = new Individual(permutation, this->depot, this->maxDuration, this->capacity, graph);
     }
     return;
 }

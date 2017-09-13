@@ -7,19 +7,13 @@
 */
 #include <individual.h>
 
-Individual::Individual(int* clients, int size, int depot, double maxDuration, double capacity, Graph& g) {
-    /*printf("[%d", clients[0]);
+Individual::Individual(std::vector<int>& customers, int depot, double maxDuration, double capacity, Graph& g): _customers(customers), _graph(g) {
+    /*printf("[%d", customers[0]);
     for(int i = 1; i < size; ++i) {
-        printf(", %d", clients[i]);
+        printf(", %d", customers[i]);
     }
     printf("];\n");*/
 
-    _clients = new int [size];
-    for(int i = 0; i < size; ++i) {
-        _clients[i] = clients[i];
-    }
-
-    _size = size;
     _depot = depot;
     _maxDuration = maxDuration;
     _capacity = capacity;
@@ -58,4 +52,12 @@ bool Individual::feasible() {
         applyed on it, returns false if fail in at least one constraint.
     */
     return true;
+}
+
+std::vector<int>& Individual::customers() {
+    /*
+        Returns the sequence of customers that
+        represents a individual
+    */
+    return this->_customers;
 }

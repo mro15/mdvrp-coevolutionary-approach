@@ -6,3 +6,36 @@
     (NÃO SEI MAIS O QUE TEM QUE POR AQUI (?))
 */
 #include <operators.h>
+
+MutSwap::MutSwap(double probability) {
+    this->_probability = 1000*probability;
+}
+
+
+void MutSwap::mutate(Individual& i) {
+    int chance = rand()%1000;
+    if(chance <= this->_probability) {
+        int pos1 = rand()%i.customers().size();
+        int pos2 = rand()%i.customers().size();
+        int value1 = i.customers().at(pos1);
+        int value2 = i.customers().at(pos2);
+        i.customers().at(pos1) = value2;
+        i.customers().at(pos2) = value1;
+    }
+}
+
+Individual** CrCut::crossOver(Individual** i) {
+    return i;
+}
+
+Individual*** SelRol::select(Individual** population, int length) {
+    Individual *** r = new Individual**[length];
+    for(int i = 0; i < length; ++i) {
+        r[i] = new Individual*[2];
+        //TODO: Selection
+        r[i][0] = population[i];
+        //r[i][1] = population[i];
+    }
+
+    return r;
+}

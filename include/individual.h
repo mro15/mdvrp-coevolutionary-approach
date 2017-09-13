@@ -5,17 +5,18 @@
 
 class Individual {
     private:
-        int* _clients;
+        std::vector<int> _customers;
         int _depot;
         double _maxDuration;
         double _capacity;
         int* _route;
-        int _size;
+        Graph& _graph;
     public:
-        Individual(int* clients, int size, int depot, double maxDuration, double capacity, Graph& g);
+        Individual(std::vector<int>& customers, int depot, double maxDuration, double capacity, Graph& g);
         int badClient();
         double fitness();
         bool feasible();
+        std::vector<int>& customers();
 };
 
 #define __INDIVIDUAL_H

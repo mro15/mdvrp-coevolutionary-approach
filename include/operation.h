@@ -6,16 +6,16 @@
 
 class Operation {
     private:
-        MutationOperator* mutationOperator;
-        CrossOverOperator* crossOverOperator;
-        SelectionOperator* selectionOperator;
+        MutationOperator& mutationOperator;
+        CrossOverOperator& crossOverOperator;
+        SelectionOperator& selectionOperator;
     public:
-        Operation(  MutationOperator* mutOp,
-                    CrossOverOperator* crOp,
-                    SelectionOperator* selOp);
-        Individual* mutate(Individual& i);
-        Individual* crossOver(Individual* i);
-        Individual* select(Individual* i);
+        Operation(  MutationOperator& mutOp,
+                    CrossOverOperator& crOp,
+                    SelectionOperator& selOp);
+        void mutate(Individual& i);
+        Individual** crossOver(Individual** i);
+        Individual*** select(Individual** i);
 };
 
 #define __OPERATION_H

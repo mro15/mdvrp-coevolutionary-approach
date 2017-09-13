@@ -7,27 +7,30 @@
 */
 #include <operation.h>
 
-Operation::Operation(MutationOperator* mutOp,
-                     CrossOverOperator* crOp,
-                     SelectionOperator* selOp) {
+Operation::Operation(MutationOperator& mutOp,
+                     CrossOverOperator& crOp,
+                     SelectionOperator& selOp):
+                     mutationOperator(mutOp),
+                     crossOverOperator(crOp),
+                     selectionOperator(selOp) {
 
 }
 
-Individual* Operation::mutate(Individual& i) {
+void Operation::mutate(Individual& i) {
     /*
         Calls the mutatate methos of the MutateOperator.
     */
-    return NULL;
+    return;
 }
 
-Individual* Operation::crossOver(Individual* i) {
+Individual** Operation::crossOver(Individual** i) {
     /*
         Calls the crossOver methos of the CrossOverOperator.
     */
     return NULL;
 }
 
-Individual* Operation::select(Individual* i) {
+Individual*** Operation::select(Individual** i) {
      /*
         Calls the select methos of the SelectionOperator.
     */

@@ -61,3 +61,11 @@ std::vector<int>& Individual::customers() {
     */
     return this->_customers;
 }
+
+void Individual::debug() {
+    printf("[");
+    for (std::vector<int>::iterator it = _customers.begin() ; it != _customers.end(); ++it) {
+        printf("%d, ", *it);
+    }
+    printf("]\n");
+}

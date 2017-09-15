@@ -17,6 +17,7 @@ class Individual {
         double fitness();
         bool feasible();
         std::vector<int>& customers();
+        void debug();
 };
 
 #define __INDIVIDUAL_H

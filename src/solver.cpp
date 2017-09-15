@@ -40,7 +40,7 @@ int* MDVRPSolver::solve( Graph& g,
         population[i]->start();
     }
     for(int i = 0; i < iterations; ++i) {
-        for(int j = 0; j < length; ++j) {
+        for(int j = 1; j < length; ++j) {
             population[j]->iterate();
         }
     }

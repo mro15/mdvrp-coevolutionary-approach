@@ -12,7 +12,7 @@ class MutationOperator {
 
 class CrossOverOperator {
     public:
-        virtual Individual** crossOver(Individual** i) = 0;
+        virtual Individual** crossover(Individual** i) = 0;
 };
 
 class SelectionOperator {
@@ -30,7 +30,7 @@ class MutSwap : public MutationOperator {
 class CrCut : public CrossOverOperator {
     double _probability;
     public:
-        Individual** crossOver(Individual** i);
+        Individual** crossover(Individual** i);
 };
 
 class SelRol : public SelectionOperator {

@@ -11,7 +11,7 @@ Operation::Operation(MutationOperator& mutOp,
                      CrossOverOperator& crOp,
                      SelectionOperator& selOp):
                      mutationOperator(mutOp),
-                     crossOverOperator(crOp),
+                     crossoverOperator(crOp),
                      selectionOperator(selOp) {
 
 }
@@ -23,9 +23,9 @@ void Operation::mutate(Individual& i) {
     return;
 }
 
-Individual** Operation::crossOver(Individual** i) {
+Individual** Operation::crossover(Individual** i) {
     /*
-        Calls the crossOver methos of the CrossOverOperator.
+        Calls the crossover methos of the CrossOverOperator.
     */
     return NULL;
 }

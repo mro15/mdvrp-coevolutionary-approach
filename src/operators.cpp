@@ -24,7 +24,7 @@ void MutSwap::mutate(Individual& i) {
     }
 }
 
-Individual** CrCut::crossOver(Individual** i) {
+Individual** CrCut::crossover(Individual** i) {
     return i;
 }
 

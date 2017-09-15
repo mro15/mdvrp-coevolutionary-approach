@@ -7,14 +7,14 @@
 class Operation {
     private:
         MutationOperator& mutationOperator;
-        CrossOverOperator& crossOverOperator;
+        CrossOverOperator& crossoverOperator;
         SelectionOperator& selectionOperator;
     public:
         Operation(  MutationOperator& mutOp,
                     CrossOverOperator& crOp,
                     SelectionOperator& selOp);
         void mutate(Individual& i);
-        Individual** crossOver(Individual** i);
+        Individual** crossover(Individual** i);
         Individual*** select(Individual** i);
 };
 

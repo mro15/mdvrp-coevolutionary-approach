@@ -8,12 +8,12 @@
 #include <operators.h>
 
 MutSwap::MutSwap(double probability) {
-    this->_probability = 1000*probability;
+    this->_probability = 100*probability;
 }
 
 
 void MutSwap::mutate(Individual& i) {
-    int chance = rand()%1000;
+    int chance = rand()%100;
     if(chance <= this->_probability) {
         int pos1 = rand()%i.customers().size();
         int pos2 = rand()%i.customers().size();
@@ -28,16 +28,52 @@ Individual** CrCut::crossover(Individual** i) {
     return i;
 }
 
-Individual*** SelRol::select(Individual** population, int length) {
-    Individual *** r = new Individual**[length];
-    int* prop = new int[2*length];
-
+Individual*** SelRol::select(Individual** individuals, int length) {
+    Individual *** r = new Individual**[length/2];
+    int* prop = new int[length];
+    double sum = 0.0;
     for(int i = 0; i < length; ++i) {
-        r[i] = new Individual*[2];
-        //TODO: Selection
-        r[i][0] = population[2*i];
-        r[i][1] = population[(2*i)+1];
+        sum += individuals[i]->fitness();
     }
 
+    for(int i = 0; i < length; ++i) {
+        prop[i] = 100*individuals[i]->fitness()/sum;
+    }
+
+
+    for(int i = 0; i < length/2; ++i) {
+        r[i] = new Individual*[2];
+        int p1 = rand()%100;
+        int p2 = rand()%100;
+        int id1 = -1, id2 = -1;
+
+        int propAcc = 0;
+        for(int j = 0; j < length; ++j) {
+            if(p1 < (prop[j] + propAcc) && id1 != -1) {
+                id1 = i;
+            }
+
+            if(p2 < (prop[j] + propAcc) && id2 != -1) {
+                if(i != id1) {
+                    id2 = i;
+                }
+            }
+
+            propAcc += prop[j];
+        }
+
+        if(id1 == -1) {
+            id1 = rand()%length;
+        }
+
+        if(id2 == -1) {
+            id2 = rand()%length;
+        }
+
+        r[i][0] = individuals[id1];
+        r[i][1] = individuals[id2];
+    }
+
+    delete[] prop;
     return r;
 }

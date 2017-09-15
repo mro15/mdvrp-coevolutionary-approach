@@ -32,7 +32,7 @@ Individual* Population::iterate() {
         Retuns the best individual of the new generation, NULL in case of error.
     */
 
-    Individual*** parents = operation.select(this->individuals, this->_nIndividuals/2);
+    Individual*** parents = operation.select(this->individuals, this->_nIndividuals);
     Individual** offspring = new Individual*[this->_nIndividuals];
     int position = 0;
     for (int i = 0; i < this->_nIndividuals/2; ++i) {

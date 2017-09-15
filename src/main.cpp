@@ -11,6 +11,8 @@
 #include "graph.h"
 #include <solver.h>
 #include <operators.h>
+#include <cstdlib>
+#include <ctime>
 
 int main(int argc, char* argv[]){
     int nCustomers, nDepots, nVehicles;
@@ -54,6 +56,7 @@ int main(int argc, char* argv[]){
     SelRol selOp;
 
     Operation op(mutOp, crOp, selOp);
+    srand(time(0));
     MDVRPSolver solver(op);
     solver.solve(g, maxRouteDuration, capacity, 10, 1000, 10);
     return 0;

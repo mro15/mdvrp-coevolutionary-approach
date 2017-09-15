@@ -30,11 +30,13 @@ Individual** CrCut::crossover(Individual** i) {
 
 Individual*** SelRol::select(Individual** population, int length) {
     Individual *** r = new Individual**[length];
+    int* prop = new int[2*length];
+
     for(int i = 0; i < length; ++i) {
         r[i] = new Individual*[2];
         //TODO: Selection
-        r[i][0] = population[i];
-        //r[i][1] = population[i];
+        r[i][0] = population[2*i];
+        r[i][1] = population[(2*i)+1];
     }
 
     return r;

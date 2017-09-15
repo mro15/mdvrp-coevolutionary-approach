@@ -20,6 +20,7 @@ void Operation::mutate(Individual& i) {
     /*
         Calls the mutatate methos of the MutateOperator.
     */
+    mutationOperator.mutate(i);
     return;
 }
 
@@ -27,12 +28,12 @@ Individual** Operation::crossover(Individual** i) {
     /*
         Calls the crossover methos of the CrossOverOperator.
     */
-    return NULL;
+    return crossoverOperator.crossover(i);
 }
 
-Individual*** Operation::select(Individual** i) {
+Individual*** Operation::select(Individual** i, int length) {
      /*
         Calls the select methos of the SelectionOperator.
     */
-    return NULL;
+    return selectionOperator.select(i, length);
 }

@@ -41,7 +41,11 @@ double Individual::fitness() {
 
         returns 0.0 on error.
     */
-    return 0.0;
+    double fit = 0.0;
+    for (std::vector<int>::iterator it = _customers.begin()+1 ; it != _customers.end(); ++it) {
+        fit -= _graph.distanceTo(*(it -1), *it);
+    }
+    return fit;
 }
 
 bool Individual::feasible() {

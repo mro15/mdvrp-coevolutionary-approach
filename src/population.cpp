@@ -32,20 +32,24 @@ Individual* Population::iterate() {
         Retuns the best individual of the new generation, NULL in case of error.
     */
 
-    /*for (int i = 0; i < this->_nIndividuals; ++i) {
-        Individual** parents = operation.select(this->_individuals);
-    }
+    Individual*** parents = operation.select(this->individuals, this->_nIndividuals/2);
     Individual** offspring = new Individual*[this->_nIndividuals];
-    for() {
-        filhos = op.crossover(pais[i])
-        offspring = offspring + filhos;
-    }
-    for(offspring) {
-        op.mutate(offsprintg[i]);
+    int position = 0;
+    for (int i = 0; i < this->_nIndividuals/2; ++i) {
+        Individual** cross = operation.crossover(parents[i]);
+        for (int j = 0; j < 2; ++j) {
+            offspring[position +j] = cross[j];
+        }
+        position += 2;
+        delete[] cross;
     }
 
-    individuals = offspring
-*/
+    for (int i = 0; i < this->_nIndividuals; ++i) {
+        operation.mutate(*offspring[i]);
+    }
+    delete[] individuals;
+    delete[] parents;
+    individuals = offspring;
     return NULL;
 }
 

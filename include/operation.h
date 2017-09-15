@@ -15,7 +15,7 @@ class Operation {
                     SelectionOperator& selOp);
         void mutate(Individual& i);
         Individual** crossover(Individual** i);
-        Individual*** select(Individual** i);
+        Individual*** select(Individual** i, int length);
 };
 
 #define __OPERATION_H

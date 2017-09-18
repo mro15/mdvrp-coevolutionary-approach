@@ -52,7 +52,7 @@ int main(int argc, char* argv[]){
     //debug function
     //g.debug();
     MutSwap mutOp(0.1);
-    CrCut crOp;
+    CrCut crOp(nCustomers + nDepots);
     SelRol selOp;
 
     Operation op(mutOp, crOp, selOp);

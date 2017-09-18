@@ -13,6 +13,7 @@ class Individual {
         Graph& _graph;
     public:
         Individual(std::vector<int>& customers, int depot, double maxDuration, double capacity, Graph& g);
+        // Individual::Individual(const Individual& i);
         int badClient();
         double fitness();
         bool feasible();

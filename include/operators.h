@@ -28,8 +28,11 @@ class MutSwap : public MutationOperator {
 };
 
 class CrCut : public CrossOverOperator {
-    double _probability;
+    private:
+        int* workSpace;
+        int length;
     public:
+        CrCut(int nCustomers);
         Individual** crossover(Individual** i);
 };
 

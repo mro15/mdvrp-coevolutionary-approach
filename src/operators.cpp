@@ -11,6 +11,11 @@ MutSwap::MutSwap(double probability) {
     this->_probability = 100*probability;
 }
 
+CrCut::CrCut(int nCustomers) {
+    this->length = nCustomers;
+    this->workSpace = new int[nCustomers];
+}
+
 
 void MutSwap::mutate(Individual& i) {
     int chance = rand()%100;
@@ -25,7 +30,51 @@ void MutSwap::mutate(Individual& i) {
 }
 
 Individual** CrCut::crossover(Individual** i) {
-    return i;
+    Individual** offspring = new Individual*[2];
+    offspring[0] = new Individual(*i[0]);
+    offspring[1] = new Individual(*i[1]);
+
+    std::vector<int> cpy0 = std::vector<int>(offspring[0]->customers());
+    std::vector<int> cpy1 = std::vector<int>(offspring[1]->customers());
+
+    std::vector<int>& customer0 = offspring[0]->customers();
+    std::vector<int>& customer1 = offspring[1]->customers();
+    int cutPos = rand()%cpy0.size();
+    std::vector<int>::iterator erasePos = customer0.begin() + cutPos;
+    customer0.erase(erasePos, customer0.end());
+    erasePos = customer1.begin() + cutPos;
+    customer1.erase(erasePos, customer1.end());
+    for(int j = 0; j < this->length; ++j) {
+        workSpace[j] = 0;
+    }
+
+    for(std::vector<int>::iterator it = customer0.begin(); it != customer0.end(); ++it) {
+        workSpace[*it] = 1;
+    }
+
+    for(std::vector<int>::iterator it = cpy1.begin(); it != cpy1.end(); ++it) {
+        if(workSpace[*it] == 0) {
+            customer0.push_back(*it);
+            workSpace[*it] = 1;
+        }
+    }
+
+    for(int j = 0; j < this->length; ++j) {
+        workSpace[j] = 0;
+    }
+
+    for(std::vector<int>::iterator it = customer1.begin(); it != customer1.end(); ++it) {
+        workSpace[*it] = 1;
+    }
+
+    for(std::vector<int>::iterator it = cpy0.begin(); it != cpy0.end(); ++it) {
+        if(workSpace[*it] == 0) {
+            customer1.push_back(*it);
+            workSpace[*it] = 1;
+        }
+    }
+
+    return offspring;
 }
 
 Individual*** SelRol::select(Individual** individuals, int length) {
@@ -66,12 +115,16 @@ Individual*** SelRol::select(Individual** individuals, int length) {
             id1 = rand()%length;
         }
 
-        if(id2 == -1) {
+        while(id2 == -1 ||  id2 == id1) {
             id2 = rand()%length;
         }
 
         r[i][0] = individuals[id1];
         r[i][1] = individuals[id2];
+
+        if(id1 == id2) {
+            printf("Deu RUIM\n");
+        }
     }
 
     delete[] prop;

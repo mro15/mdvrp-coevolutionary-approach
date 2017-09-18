@@ -19,6 +19,11 @@ Individual::Individual(std::vector<int>& customers, int depot, double maxDuratio
     _capacity = capacity;
 }
 
+/*Individual::Individual(const Individual& i): _graph(i._graph) {
+    _customers = std::vector<int>(i._customers);
+    _depot
+}*/
+
 int Individual::badClient() {
     /*
         Returns the client (id) that proprably is impactly badly in the fitness
@@ -40,6 +45,8 @@ double Individual::fitness() {
         are going to do it, we will change this description.
 
         returns 0.0 on error.
+
+        Adicionar a discanpia para os depostios
     */
     double fit = 0.0;
     for (std::vector<int>::iterator it = _customers.begin()+1 ; it != _customers.end(); ++it) {

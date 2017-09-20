@@ -16,6 +16,7 @@ class Individual {
         // Individual::Individual(const Individual& i);
         int badClient();
         double fitness();
+        double duration();
         bool feasible();
         std::vector<int>& customers();
         void debug();

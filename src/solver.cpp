@@ -13,7 +13,7 @@ MDVRPSolver::MDVRPSolver(Operation& op): operation(op) {
     */
 }
 
-int* MDVRPSolver::solve( Graph& g,
+void MDVRPSolver::solve( Graph& g,
                          double maxDuration,
                          double capacity,
                          int iterations,
@@ -35,18 +35,38 @@ int* MDVRPSolver::solve( Graph& g,
         returns NULL in error or impossibility to solve.
     */
     Population ** population = this->initPopulations(g, maxDuration, capacity, nIndividuals);
+
     int length = g.nDepots()*g.maxVehicles() +1;
     for(int i = 1; i < length; ++i) {
         population[i]->start();
     }
+
     for(int i = 0; i < iterations; ++i) {
         for(int j = 1; j < length; ++j) {
             population[j]->iterate();
         }
     }
 
+    bool capacityFeasible = true;
+    bool durationFeasible = true;
+    double fitness = 0.0;
+    printf("(routeId): depot: [route]: capacityFeasible, durationFeasible\n");
+    for(int i = 1; i < length; ++i) {
+        Individual* best = population[i]->best();
+        if(best != NULL) {
+            printf("(%d): %d:", i, population[i]->depot());
+            best->debug();
+            bool capacity = population[i]->underCapacity();
+            bool duration = best->feasible();
+            fitness += best->duration();
+            printf(": %d, %d\n",  capacity, duration);
+            capacityFeasible = capacityFeasible && capacity;
+            durationFeasible = durationFeasible && duration;
+        }
+    }
+    printf("----------------------------------------------\n");
+    printf("Solution: %lf, %d, %d\n",  fitness, capacityFeasible, durationFeasible);
     // TODO: Encontrar uma forma de retornar solução
-    return NULL;
 }
 
 Population** MDVRPSolver::initPopulations(Graph& g, double maxDuration, double capacity, int nIndividuals) {

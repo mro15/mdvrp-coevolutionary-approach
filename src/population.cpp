@@ -7,17 +7,18 @@
 */
 #include <population.h>
 
-Population::Population(int id, Graph& g, Operation& op, int depot, double maxDuration, double capacity, int nIndividuals):
+Population::Population(int id, Graph& g, Operation& op, int depot, double maxDuration, double maxCapacity, int nIndividuals):
                        operation(op), graph(g) {
     this->_id = id;
-    this->depot = depot;
+    this->_depot = depot;
     this->maxDuration = maxDuration;
     this->individuals = NULL;
     this->_nIndividuals = nIndividuals;
-    this->capacity = capacity;
+    this->maxCapacity = maxCapacity;
+    this->capacity = 0;
 }
 
-Individual* Population::iterate() {
+void Population::iterate() {
     /*
         Executes one iteration of the solve method for this population
 
@@ -52,7 +53,6 @@ Individual* Population::iterate() {
         delete[] parents;
         individuals = offspring;
     }
-    return NULL;
 }
 
 bool Population::addClient(int vertex) {
@@ -78,6 +78,7 @@ bool Population::addClient(int vertex) {
     }
     if (graph.setToRoute(vertex, this->_id)) {
         customers.push_back(vertex);
+        capacity += graph.demand(vertex);
         return true;
     }
     return false;
@@ -126,7 +127,7 @@ void Population::start() {
     for(int i = 0; i < this->_nIndividuals; i++) {
         std::vector<int> permutation(customers);
         random_shuffle(permutation.begin(), permutation.end());
-        individuals[i] = new Individual(permutation, this->depot, this->maxDuration, this->capacity, graph);
+        individuals[i] = new Individual(permutation, this->_depot, this->maxDuration, this->maxCapacity, graph);
     }
     return;
 }
@@ -168,4 +169,37 @@ int Population::badClient() {
         returns 0 if none is bad.
     */
     return 0;
+}
+
+bool Population::underCapacity() {
+    /*
+        Returns true if this population in under the limit of
+        capacity of a vehicle. False otherwise.
+    */
+
+    return capacity < maxCapacity;
+}
+
+Individual* Population::best() {
+    if (this->customers.size() > 0) {
+        Individual *best = individuals[0];
+        double bestFitness = best->fitness();
+        for (int i = 1; i < this->_nIndividuals; ++i) {
+            double fitness = individuals[i]->fitness();
+            if (fitness > bestFitness) {
+                best = individuals[i];
+                bestFitness = fitness;
+            }
+        }
+
+        return best;
+    }
+
+    else {
+        return NULL;
+    }
+}
+
+int Population::depot() {
+    return this->_depot;
 }

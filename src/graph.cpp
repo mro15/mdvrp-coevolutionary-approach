@@ -306,3 +306,7 @@ int** Graph::assignment() {
     }*/
     return r;
 }
+
+double Graph::demand(int vertex) {
+    return this->vertices[vertex]->demand();
+}

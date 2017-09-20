@@ -12,7 +12,7 @@ class MDVRPSolver {
         Population** initPopulations(Graph &g, double maxDuration, double capacity, int nIndividuals);
     public:
         MDVRPSolver(Operation& op);
-        int* solve(Graph& g, double maxDuration, double capacity, int iterations, int itToMigrate, int nIndividuals);
+        void solve(Graph& g, double maxDuration, double capacity, int iterations, int itToMigrate, int nIndividuals);
 };
 
 #endif

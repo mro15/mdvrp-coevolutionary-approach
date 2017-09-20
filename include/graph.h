@@ -36,6 +36,7 @@ class Graph {
         int nVertices();
         int nDepots();
         int maxVehicles();
+        double demand(int vertex);
 };
 
 #endif

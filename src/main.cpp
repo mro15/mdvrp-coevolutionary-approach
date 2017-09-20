@@ -48,9 +48,6 @@ int main(int argc, char* argv[]){
         g.addVertex(id, duration, demand, x, y, DEPOT);
     }
     g.buildEdges();
-    //g.assignment();
-    //debug function
-    //g.debug();
     MutSwap mutOp(0.1);
     CrCut crOp(nCustomers + nDepots);
     SelRol selOp;
@@ -58,7 +55,7 @@ int main(int argc, char* argv[]){
     Operation op(mutOp, crOp, selOp);
     srand(time(0));
     MDVRPSolver solver(op);
-    solver.solve(g, maxRouteDuration, capacity, 10, 1000, 10);
+    solver.solve(g, maxRouteDuration, capacity, 1000, 0, 12);
     return 0;
 }
 

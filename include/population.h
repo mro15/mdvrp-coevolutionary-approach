@@ -13,17 +13,21 @@ class Population {
         Operation& operation;
         Graph& graph;
         std::vector<int> customers;
-        int depot, _id, _nIndividuals;
-        double maxDuration, capacity;
+        int _depot, _id, _nIndividuals;
+        double maxDuration, maxCapacity;
+        double capacity;
     public:
-        Population(int id, Graph& g, Operation& op, int depot, double maxDuration, double capacity, int nIndividuals);
-        Individual* iterate();
+        Population(int id, Graph& g, Operation& op, int depot, double maxDuration, double maxCapacity, int nIndividuals);
+        void iterate();
         bool addClient(int id);
         bool removeClient(int id);
         void start();
         void restart();
         void clear();
         int badClient();
+        Individual* best();
+        bool underCapacity();
+        int depot();
 };
 
 #endif

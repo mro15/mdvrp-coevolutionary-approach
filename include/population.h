@@ -12,7 +12,7 @@ class Population {
         Individual** individuals;
         Operation& operation;
         Graph& graph;
-        std::vector<int> clients;
+        std::vector<int> customers;
         int depot, _id, _nIndividuals;
         double maxDuration, capacity;
     public:

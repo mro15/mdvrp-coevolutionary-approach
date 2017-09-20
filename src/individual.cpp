@@ -19,11 +19,6 @@ Individual::Individual(std::vector<int>& customers, int depot, double maxDuratio
     _capacity = capacity;
 }
 
-/*Individual::Individual(const Individual& i): _graph(i._graph) {
-    _customers = std::vector<int>(i._customers);
-    _depot
-}*/
-
 int Individual::badClient() {
     /*
         Returns the client (id) that proprably is impactly badly in the fitness

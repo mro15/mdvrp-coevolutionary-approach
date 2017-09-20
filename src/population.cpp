@@ -32,7 +32,7 @@ Individual* Population::iterate() {
         Retuns the best individual of the new generation, NULL in case of error.
     */
 
-    if(this->clients.size() > 0) {
+    if(this->customers.size() > 0) {
         Individual*** parents = operation.select(this->individuals, this->_nIndividuals);
         Individual** offspring = new Individual*[this->_nIndividuals];
         int position = 0;
@@ -71,13 +71,13 @@ bool Population::addClient(int vertex) {
         WARNING: This method does NOT verify if the client is in other
         Populations.
     */
-    for (std::vector<int>::iterator it = clients.begin() ; it != clients.end(); ++it) {
+    for (std::vector<int>::iterator it = customers.begin() ; it != customers.end(); ++it) {
         if(*it == vertex) {
             return false;
         }
     }
     if (graph.setToRoute(vertex, this->_id)) {
-        clients.push_back(vertex);
+        customers.push_back(vertex);
         return true;
     }
     return false;
@@ -97,14 +97,14 @@ bool Population::removeClient(int id) {
     */
     std::vector<int>::iterator toRemove;
     bool find = false;
-    for (std::vector<int>::iterator it = clients.begin() ; it != clients.end(); ++it) {
+    for (std::vector<int>::iterator it = customers.begin() ; it != customers.end(); ++it) {
         if(*it == id) {
             toRemove = it;
             find = true;
         }
     }
     if (find) {
-        clients.erase(toRemove);
+        customers.erase(toRemove);
         return true;
     }
 
@@ -115,7 +115,7 @@ void Population::start() {
     /*
         Creates a random set of individuals and save it internaly.
 
-        Using the clients added create a set of random individuals and
+        Using the customers added create a set of random individuals and
         add than to the individuals set.
 
         WARNING: This function assumes that individuals is NULL or
@@ -124,7 +124,7 @@ void Population::start() {
 
     individuals = new Individual*[this->_nIndividuals];
     for(int i = 0; i < this->_nIndividuals; i++) {
-        std::vector<int> permutation(clients);
+        std::vector<int> permutation(customers);
         random_shuffle(permutation.begin(), permutation.end());
         individuals[i] = new Individual(permutation, this->depot, this->maxDuration, this->capacity, graph);
     }
@@ -136,7 +136,7 @@ void Population::restart() {
         Reset a population, in other words, clear and start population.
 
         Removes the existent individuals and create a new random set using the
-        clients added to this population.
+        customers added to this population.
 
         Is literay call start and clear in sequence and just it.
     */

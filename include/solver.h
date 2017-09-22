@@ -13,6 +13,7 @@ class MDVRPSolver {
     public:
         MDVRPSolver(Operation& op);
         void solve(Graph& g, double maxDuration, double capacity, int iterations, int itToMigrate, int nIndividuals);
+    void migrate(Population **p, int length);
 };
 
 #endif

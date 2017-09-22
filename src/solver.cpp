@@ -116,3 +116,15 @@ Population** MDVRPSolver::initPopulations(Graph& g, double maxDuration, double c
 
     return r;
 }
+
+void MDVRPSolver::migrate(Population **p, int length) {
+    std::vector<Migration> migrations;
+    for(int i = 0; i < length; ++i) {
+        std::vector<Migration> m = p[i]->migration();
+        migrations.insert(migrations.end(), m.begin(), m.end());
+    }
+
+    std::sort(migrations.begin(), migrations.end());
+
+    return;
+}

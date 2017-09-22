@@ -203,3 +203,8 @@ Individual* Population::best() {
 int Population::depot() {
     return this->_depot;
 }
+
+std::vector<Migration> Population::migration() {
+    std::vector<Migration> r;
+    return r;
+}

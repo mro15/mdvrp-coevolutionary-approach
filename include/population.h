@@ -5,24 +5,29 @@
 #include <individual.h>
 #include <operation.h>
 #include <vector>
+#include <algorithm>
 
 class Population {
     private:
-        Individual* individuals;
+        Individual** individuals;
         Operation& operation;
         Graph& graph;
-        std::vector<int> clients;
-        int depot, _id;
-        double maxDuration;
+        std::vector<int> customers;
+        int _depot, _id, _nIndividuals;
+        double maxDuration, maxCapacity;
+        double capacity;
     public:
-        Population(int id, Graph& g, Operation& op, int depot, double maxDuration);
-        Individual* iterate();
+        Population(int id, Graph& g, Operation& op, int depot, double maxDuration, double maxCapacity, int nIndividuals);
+        void iterate();
         bool addClient(int id);
         bool removeClient(int id);
         void start();
         void restart();
         void clear();
         int badClient();
+        Individual* best();
+        bool underCapacity();
+        int depot();
 };
 
 #endif

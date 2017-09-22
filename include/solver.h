@@ -9,10 +9,10 @@
 class MDVRPSolver {
     private:
         Operation& operation;
-        Population** initPopulations(Graph &g, int nDepots, int maxVehicles, int maxDuration);
+        Population** initPopulations(Graph &g, double maxDuration, double capacity, int nIndividuals);
     public:
         MDVRPSolver(Operation& op);
-        int* solve(Graph& g, int maxDuration, int iterations, int itToMigrate);
+        void solve(Graph& g, double maxDuration, double capacity, int iterations, int itToMigrate, int nIndividuals);
 };
 
 #endif

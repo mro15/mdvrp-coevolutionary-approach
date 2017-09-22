@@ -5,15 +5,21 @@
 
 class Individual {
     private:
-        int* clients;
-        int depot;
-        double maxDuration;
-        int* route;
+        std::vector<int> _customers;
+        int _depot;
+        double _maxDuration;
+        double _capacity;
+        int* _route;
+        Graph& _graph;
     public:
-        Individual(int* clients, int depot, double maxDuration, Graph g);
+        Individual(std::vector<int>& customers, int depot, double maxDuration, double capacity, Graph& g);
+        // Individual::Individual(const Individual& i);
         int badClient();
         double fitness();
+        double duration();
         bool feasible();
+        std::vector<int>& customers();
+        void debug();
 };
 
 #define __INDIVIDUAL_H

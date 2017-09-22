@@ -7,8 +7,10 @@
 */
 #include <individual.h>
 
-Individual::Individual(int* clients, int depot, double maxDuration, Graph g) {
-
+Individual::Individual(std::vector<int>& customers, int depot, double maxDuration, double capacity, Graph& g): _customers(customers), _graph(g) {
+    _depot = depot;
+    _maxDuration = maxDuration;
+    _capacity = capacity;
 }
 
 int Individual::badClient() {
@@ -32,8 +34,23 @@ double Individual::fitness() {
         are going to do it, we will change this description.
 
         returns 0.0 on error.
+
+        Adicionar a discanpia para os depostios
     */
-    return 0.0;
+    return -this->duration();
+}
+
+double Individual::duration() {
+    /*
+        Returns the duration of a route
+    */
+
+    double duration = _graph.distanceTo(this->_depot, *(_customers.begin()));
+    for (std::vector<int>::iterator it = _customers.begin()+1 ; it != _customers.end(); ++it) {
+        duration += _graph.distanceTo(*(it -1), *it);
+    }
+
+    return duration + _graph.distanceTo(*(_customers.end()), this->_depot);
 }
 
 bool Individual::feasible() {
@@ -43,5 +60,22 @@ bool Individual::feasible() {
         Returns true if this individual passes in all constraints of the problem
         applyed on it, returns false if fail in at least one constraint.
     */
-    return true;
+
+    return (this->_maxDuration != 0 ) ? this->duration() < this->_maxDuration: true ;
+}
+
+std::vector<int>& Individual::customers() {
+    /*
+        Returns the sequence of customers that
+        represents a individual
+    */
+    return this->_customers;
+}
+
+void Individual::debug() {
+    printf("[");
+    for (std::vector<int>::iterator it = _customers.begin() ; it != _customers.end(); ++it) {
+        printf("%d, ", *it);
+    }
+    printf("]");
 }

@@ -3,20 +3,44 @@
 
 #include <individual.h>
 #include <iostream>
+#include <cstdlib>
 
 class MutationOperator {
     public:
-        virtual Individual* mutate(Individual& i) = 0;
+        virtual void mutate(Individual& i) = 0;
+        virtual double ratio() = 0;
 };
 
 class CrossOverOperator {
     public:
-        virtual Individual* crossOver(Individual* i) = 0;
+        virtual Individual** crossover(Individual** i) = 0;
 };
 
 class SelectionOperator {
     public:
-        virtual Individual* select(Individual* i) = 0;
+        virtual Individual*** select(Individual** i, int length) = 0;
 };
 
+class MutSwap : public MutationOperator {
+    double _probability;
+    double _ratio;
+    public:
+        MutSwap(double probability);
+        void mutate(Individual& i);
+        double ratio();
+};
+
+class CrCut : public CrossOverOperator {
+    private:
+        int* workSpace;
+        int length;
+    public:
+        CrCut(int nCustomers);
+        Individual** crossover(Individual** i);
+};
+
+class SelRol : public SelectionOperator {
+    public:
+        Individual*** select(Individual** i, int length);
+};
 #endif

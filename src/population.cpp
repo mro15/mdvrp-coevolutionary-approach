@@ -7,19 +7,23 @@
 */
 #include <population.h>
 
-Population::Population(int id, Graph& g, Operation& op, int depot, double maxDuration):
+Population::Population(int id, Graph& g, Operation& op, int depot, double maxDuration, double maxCapacity, int nIndividuals):
                        operation(op), graph(g) {
     this->_id = id;
-    this->depot = depot;
+    this->_depot = depot;
     this->maxDuration = maxDuration;
+    this->individuals = NULL;
+    this->_nIndividuals = nIndividuals;
+    this->maxCapacity = maxCapacity;
+    this->capacity = 0;
 }
 
-Individual* Population::iterate() {
+void Population::iterate() {
     /*
         Executes one iteration of the solve method for this population
 
-        One iteration means progess the solving process one step.
-        In this case, an evlutionary algorithm, is apply the three operations
+        One iteration means progress the solving process one step.
+        In this case, an evolutionary algorithm, is apply the three operations
         in the individuals of this population that is, selection, cross-over
         than mutation, in this order.
 
@@ -28,7 +32,27 @@ Individual* Population::iterate() {
 
         Retuns the best individual of the new generation, NULL in case of error.
     */
-    return NULL;
+
+    if(this->customers.size() > 0) {
+        Individual*** parents = operation.select(this->individuals, this->_nIndividuals);
+        Individual** offspring = new Individual*[this->_nIndividuals];
+        int position = 0;
+        for (int i = 0; i < this->_nIndividuals/2; ++i) {
+            Individual** cross = operation.crossover(parents[i]);
+            for (int j = 0; j < 2; ++j) {
+                offspring[position +j] = cross[j];
+            }
+            position += 2;
+            delete[] cross;
+        }
+
+        for (int i = 0; i < this->_nIndividuals; ++i) {
+            operation.mutate(*offspring[i]);
+        }
+        delete[] individuals;
+        delete[] parents;
+        individuals = offspring;
+    }
 }
 
 bool Population::addClient(int vertex) {
@@ -47,13 +71,14 @@ bool Population::addClient(int vertex) {
         WARNING: This method does NOT verify if the client is in other
         Populations.
     */
-    for (std::vector<int>::iterator it = clients.begin() ; it != clients.end(); ++it) {
+    for (std::vector<int>::iterator it = customers.begin() ; it != customers.end(); ++it) {
         if(*it == vertex) {
             return false;
         }
     }
     if (graph.setToRoute(vertex, this->_id)) {
-        clients.push_back(vertex);
+        customers.push_back(vertex);
+        capacity += graph.demand(vertex);
         return true;
     }
     return false;
@@ -71,18 +96,39 @@ bool Population::removeClient(int id) {
 
         False can be retured for a inexistent vertex;
     */
-    return true;
+    std::vector<int>::iterator toRemove;
+    bool find = false;
+    for (std::vector<int>::iterator it = customers.begin() ; it != customers.end(); ++it) {
+        if(*it == id) {
+            toRemove = it;
+            find = true;
+        }
+    }
+    if (find) {
+        customers.erase(toRemove);
+        return true;
+    }
+
+    return false;
 }
 
 void Population::start() {
     /*
         Creates a random set of individuals and save it internaly.
 
-        Using the clients added create a set of random individuals and
+        Using the customers added create a set of random individuals and
         add than to the individuals set.
 
-        WARNING: This function does NOT remove the exisent individuals.
+        WARNING: This function assumes that individuals is NULL or
+        clear has been called before.
     */
+
+    individuals = new Individual*[this->_nIndividuals];
+    for(int i = 0; i < this->_nIndividuals; i++) {
+        std::vector<int> permutation(customers);
+        random_shuffle(permutation.begin(), permutation.end());
+        individuals[i] = new Individual(permutation, this->_depot, this->maxDuration, this->maxCapacity, graph);
+    }
     return;
 }
 
@@ -91,10 +137,13 @@ void Population::restart() {
         Reset a population, in other words, clear and start population.
 
         Removes the existent individuals and create a new random set using the
-        clients added to this population.
+        customers added to this population.
 
         Is literay call start and clear in sequence and just it.
     */
+    this->clear();
+    this->start();
+
     return;
 }
 
@@ -102,6 +151,10 @@ void Population::clear() {
     /*
         Removes the existent individuals.
     */
+    for(int i = 0; i < this->_nIndividuals; i++) {
+        delete individuals[i];
+    }
+    delete[] individuals;
     return;
 }
 
@@ -116,4 +169,37 @@ int Population::badClient() {
         returns 0 if none is bad.
     */
     return 0;
+}
+
+bool Population::underCapacity() {
+    /*
+        Returns true if this population in under the limit of
+        capacity of a vehicle. False otherwise.
+    */
+
+    return capacity < maxCapacity;
+}
+
+Individual* Population::best() {
+    if (this->customers.size() > 0) {
+        Individual *best = individuals[0];
+        double bestFitness = best->fitness();
+        for (int i = 1; i < this->_nIndividuals; ++i) {
+            double fitness = individuals[i]->fitness();
+            if (fitness > bestFitness) {
+                best = individuals[i];
+                bestFitness = fitness;
+            }
+        }
+
+        return best;
+    }
+
+    else {
+        return NULL;
+    }
+}
+
+int Population::depot() {
+    return this->_depot;
 }

@@ -7,22 +7,22 @@
 */
 #include <graph.h>
 
-Graph::Graph(int nCustomers, int nDepots, int maxVehicles){
+Graph::Graph(int nCustomers, int _nDepots, int _maxVehicles){
     this->nCustomers = nCustomers;
-    this->nDepots = nDepots;
-    this->maxVehicles = maxVehicles;
-    this->nVertices = nCustomers + nDepots+1;
-    this->_depots = new int[nDepots];
+    this->_nDepots = _nDepots;
+    this->_maxVehicles = _maxVehicles;
+    this->_nVertices = nCustomers + _nDepots+1;
+    this->_depots = new int[_nDepots];
     this->_customers = new int[nCustomers];
-    this->vertices = new Vertex*[nVertices];
-    this->matrix = new double*[nCustomers+nDepots+1];
-    for(int i=0; i<nVertices; ++i){
-        this->matrix[i]=new double[nVertices];
+    this->vertices = new Vertex*[_nVertices];
+    this->matrix = new double*[nCustomers+_nDepots+1];
+    for(int i=0; i<_nVertices; ++i){
+        this->matrix[i]=new double[_nVertices];
     }
 }
 
 Graph::~Graph() {
-    for(int i=0; i<nVertices; ++i){
+    for(int i=0; i<_nVertices; ++i){
         delete[] this->matrix[i];
         delete this->vertices[i];
     }
@@ -39,15 +39,15 @@ void Graph::debug(){
         Print all vertices position, demand and duration
     */
     // std::cout << "Printing List" << std::endl;
-    for(int i=1; i < nVertices; ++i){
+    for(int i=1; i < _nVertices; ++i){
        vertices[i]->debug();
     }
 }
 
 
 void Graph::printDistances() {
-    for(int i=1; i<nVertices; ++i){
-        for(int j=1; j<nVertices; ++j){
+    for(int i=1; i<_nVertices; ++i){
+        for(int j=1; j<_nVertices; ++j){
             printf("%f ", this->matrix[i][j]);
         }
         printf("\n");
@@ -82,8 +82,8 @@ void Graph::buildEdges() {
         is set to the distance between then.
     */
     int depotIndex = 0, customerIndex = 0;
-    for(int i=1; i<nVertices; ++i){
-        for(int j=1; j<nVertices; ++j){
+    for(int i=1; i<_nVertices; ++i){
+        for(int j=1; j<_nVertices; ++j){
             this->matrix[i][j]=vertices[i]->distanceTo(vertices[j]);
         }
         if (this->vertices[i]->type() == DEPOT) {
@@ -96,8 +96,8 @@ void Graph::buildEdges() {
             ++customerIndex;
         }
     }
-    for (int i=1; i<nVertices; ++i) {
-        vertices[i]->setNeighborhood(vertices, this->matrix[i], nVertices);
+    for (int i=1; i<_nVertices; ++i) {
+        vertices[i]->setNeighborhood(vertices, this->matrix[i], _nVertices);
     }
     return;
 }
@@ -114,7 +114,7 @@ double Graph::distanceTo(int a, int b) {
         return 0.0 if a vertex is not found in the graph or if the ids are
         equal.
     */
-    if(a < nVertices && b < nVertices && a > -1 && b > -1) {
+    if(a < _nVertices && b < _nVertices && a > -1 && b > -1) {
         return this->matrix[a][b];
     }
     return 0.0;
@@ -131,7 +131,7 @@ bool Graph::setToRoute(int vertex, int route) {
 
         WARNING: This method does not checks if this route id is valid.
     */
-    if(vertex < nVertices && vertex > -1) {
+    if(vertex < _nVertices && vertex > -1) {
         this->vertices[vertex]->changeToRoute(route);
         return true;
     }
@@ -150,7 +150,7 @@ int Graph::kNeighborsRoute(int vertex, int k) {
 
         returns 0 in error.
     */
-    if(vertex < nVertices && vertex > -1) {
+    if(vertex < _nVertices && vertex > -1) {
         return this->vertices[vertex]->kNeighborsRoute(k);
     }
     return 0;
@@ -162,7 +162,7 @@ void Graph::resetRoutes() {
 
         Set all the vertices to a default, unused route value, 0.
     */
-    for (int i = 1; i < this->nVertices; ++i) {
+    for (int i = 1; i < this->_nVertices; ++i) {
         this->vertices[i]->changeToRoute(0);
     }
     return;
@@ -176,46 +176,58 @@ int* Graph::customers() {
     return this->_customers;
 }
 
+int Graph::nVertices() {
+    return this->_nVertices;
+}
+
+int Graph::nDepots() {
+    return this->_nDepots;
+}
+
+int Graph::maxVehicles() {
+    return this->_maxVehicles;
+}
+
 int** Graph::assignment() {
     this->resetRoutes();
-    int nRoutes = this->nDepots * this->maxVehicles;
+    int nRoutes = this->_nDepots * this->_maxVehicles;
     int **r = new int*[nRoutes];
     for(int i = 0; i < nRoutes; ++i) {
-        r[i] = new int[this->nVertices];
-        for(int j = 1; j < this->nVertices; ++j) {
+        r[i] = new int[this->_nVertices];
+        for(int j = 1; j < this->_nVertices; ++j) {
             r[i][j] = 0;
         }
     }
 
-    for(int i = 0; i < this->nDepots; ++i) {
-        for(int j = 1; j < this->nVertices; ++j) {
+    for(int i = 0; i < this->_nDepots; ++i) {
+        for(int j = 1; j < this->_nVertices; ++j) {
             if (this->vertices[j]->nearestDepot() == this->_depots[i]) {
-                r[i*this->maxVehicles][j] = 1;
+                r[i*this->_maxVehicles][j] = 1;
             }
             else {
-                r[i*this->maxVehicles][j] = 0;
+                r[i*this->_maxVehicles][j] = 0;
             }
         }
     }
 
 
-    int* centers = new int[this->maxVehicles];
-    int* workSpace = new int[this->nVertices];
+    int* centers = new int[this->_maxVehicles];
+    int* workSpace = new int[this->_nVertices];
     int centersLength = 0;
     int index = 0;
     int foundCenter = -1;
     bool centerFounded = false, fewCustomers = false;
-    for(int i = 0; i < this->nDepots; ++i) {
+    for(int i = 0; i < this->_nDepots; ++i) {
         Vertex* depot = this->vertices[this->_depots[i]];
         centers[0] = depot->furthest(depot->id(), 1);
         centersLength = 1;
         index = 1;
         fewCustomers = false;
         centerFounded = false;
-        for(int j = 0; j < this->nVertices; ++j) {
+        for(int j = 0; j < this->_nVertices; ++j) {
             workSpace[j] = 0;
         }
-        while(centersLength < maxVehicles && !fewCustomers) {
+        while(centersLength < _maxVehicles && !fewCustomers) {
             for(int j = 0; j < centersLength; ++j) {
                 Vertex* v = this->vertices[centers[j]];
                 int furthest = v->furthest(depot->id(), index);
@@ -224,9 +236,6 @@ int** Graph::assignment() {
                 }
                 else {
                     ++workSpace[furthest];
-                    /*if(centersLength == 1) {
-                        printf("FUR00: %d, %d\n", furthest, workSpace[furthest]);
-                    }*/
                     if (workSpace[furthest] == centersLength && !centerFounded) {
                         foundCenter = furthest;
                         centerFounded = true;
@@ -234,12 +243,9 @@ int** Graph::assignment() {
                 }
             }
 
-            while (centerFounded && centersLength < maxVehicles) {
+            while (centerFounded && centersLength < _maxVehicles) {
                 centerFounded = false;
                 centers[centersLength] = foundCenter;
-                /*if(centersLength == 1) {
-                    printf("FUR11: %d\n", centers[centersLength]);
-                }*/
                 ++centersLength;
                 for(int j = 1; j <= index; ++j) {
                     Vertex* v = this->vertices[foundCenter];
@@ -261,12 +267,9 @@ int** Graph::assignment() {
         }
 
         for(int k = 0; k < centersLength; ++k) {
-            /*if(centers[k] == 10) {
-                printf("%d OK OKDO\n", k);
-            }*/
-            this->vertices[centers[k]]->changeToRoute(i*maxVehicles+k +1);
-            r[i*maxVehicles][centers[k]] = 0;
-            r[i*maxVehicles+k][centers[k]] = 1;
+            this->vertices[centers[k]]->changeToRoute(i*_maxVehicles+k +1);
+            r[i*_maxVehicles][centers[k]] = 0;
+            r[i*_maxVehicles+k][centers[k]] = 1;
         }
 
         bool allAssigned = false;
@@ -278,26 +281,32 @@ int** Graph::assignment() {
                     k = centersLength;
                 }
                 else {
-                    /*if(vertex == 10) {
-                        printf("1111111111\n");
-                    }*/
-                    this->vertices[vertex]->changeToRoute(i*maxVehicles+k +1);
-                    r[i*maxVehicles][vertex] = 0;
-                    r[i*maxVehicles+k][vertex] = 1;
+                    this->vertices[vertex]->changeToRoute(i*_maxVehicles+k +1);
+                    r[i*_maxVehicles][vertex] = 0;
+                    r[i*_maxVehicles+k][vertex] = 1;
                 }
 
             }
         }
 
-        r[i*maxVehicles][this->_depots[i]] = 0;
+        r[i*_maxVehicles][this->_depots[i]] = 0;
         depot->changeToRoute(0);
     }
-    /*for(int k = 0; k < this->nDepots*maxVehicles; ++k) {
+    /*printf("(%d)[%d", 0, 1);
+    for(int j = 2; j < this->_nVertices; ++j) {
+        printf(", %d", j);
+    }
+    printf("]\n");
+    for(int k = 0; k < this->_nDepots*_maxVehicles; ++k) {
         printf("(%d)[%d", k+1, r[k][1]);
-        for(int j = 2; j < this->nVertices; ++j) {
+        for(int j = 2; j < this->_nVertices; ++j) {
             printf(", %d", r[k][j]);
         }
         printf("]\n");
     }*/
     return r;
+}
+
+double Graph::demand(int vertex) {
+    return this->vertices[vertex]->demand();
 }

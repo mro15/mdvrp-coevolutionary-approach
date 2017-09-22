@@ -9,6 +9,7 @@
 
 MutSwap::MutSwap(double probability) {
     this->_probability = 100*probability;
+    this->_ratio = probability;
 }
 
 CrCut::CrCut(int nCustomers) {
@@ -27,6 +28,10 @@ void MutSwap::mutate(Individual& i) {
         i.customers().at(pos1) = value2;
         i.customers().at(pos2) = value1;
     }
+}
+
+double MutSwap::ratio() {
+    return this->_ratio;
 }
 
 Individual** CrCut::crossover(Individual** i) {

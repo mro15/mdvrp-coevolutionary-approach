@@ -8,6 +8,7 @@
 class MutationOperator {
     public:
         virtual void mutate(Individual& i) = 0;
+        virtual double ratio() = 0;
 };
 
 class CrossOverOperator {
@@ -22,9 +23,11 @@ class SelectionOperator {
 
 class MutSwap : public MutationOperator {
     double _probability;
+    double _ratio;
     public:
         MutSwap(double probability);
         void mutate(Individual& i);
+        double ratio();
 };
 
 class CrCut : public CrossOverOperator {

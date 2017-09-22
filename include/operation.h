@@ -14,6 +14,7 @@ class Operation {
                     CrossOverOperator& crOp,
                     SelectionOperator& selOp);
         void mutate(Individual& i);
+        double mutationRatio();
         Individual** crossover(Individual** i);
         Individual*** select(Individual** i, int length);
 };

@@ -47,26 +47,42 @@ void MDVRPSolver::solve( Graph& g,
         }
     }
 
-    bool capacityFeasible = true;
-    bool durationFeasible = true;
+    int capacityFeasible = 0;
+    int durationFeasible = 0;
     double fitness = 0.0;
-    printf("(routeId): depot: [route]: capacityFeasible, durationFeasible\n");
+    printf("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+        "N° Individuals",
+        "Mutation Ratio",
+        "Iterations",
+        "Duration",
+        "Capacity",
+        "Duration");
     for(int i = 1; i < length; ++i) {
         Individual* best = population[i]->best();
         if(best != NULL) {
-            printf("(%d): %d:", i, population[i]->depot());
-            best->debug();
+            // printf("(%d): %d:", i, population[i]->depot());
+            //best->debug();
             bool capacity = population[i]->underCapacity();
             bool duration = best->feasible();
             fitness += best->duration();
-            printf(": %d, %d\n",  capacity, duration);
-            capacityFeasible = capacityFeasible && capacity;
-            durationFeasible = durationFeasible && duration;
+            // printf(": %d, %d\n",  capacity, duration);
+            if (capacity) {
+                ++capacityFeasible;
+            }
+            if (duration) {
+                ++durationFeasible;
+            }
         }
     }
-    printf("----------------------------------------------\n");
-    printf("Solution: %lf, %d, %d\n",  fitness, capacityFeasible, durationFeasible);
-    // TODO: Encontrar uma forma de retornar solução
+    printf("\"%d\";\"%lf\";\"%d\";\"%lf\";\"(%d/%d)\";\"(%d/%d)\"\n",
+        nIndividuals,
+        operation.mutationRatio(),
+        iterations,
+        fitness,
+        capacityFeasible,
+        length -1,
+        durationFeasible,
+        length -1);
 }
 
 Population** MDVRPSolver::initPopulations(Graph& g, double maxDuration, double capacity, int nIndividuals) {

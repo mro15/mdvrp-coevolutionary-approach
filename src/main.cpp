@@ -8,22 +8,25 @@
 
 #include <iostream>
 #include <fstream>
-#include "graph.h"
+#include <graph.h>
 #include <solver.h>
 #include <operators.h>
 #include <cstdlib>
 #include <ctime>
 
 int main(int argc, char* argv[]){
-    int nCustomers, nDepots, nVehicles;
-    double maxRouteDuration, capacity;
+    int nCustomers, nDepots, nVehicles, nIterations, populationSize;
+    double maxRouteDuration, capacity, mutationRatio;
     std::fstream input;
     char* fileName;
-    if(argc!=2){
-        std::cout << "Usage is <infile>\n";
+    if(argc!=5){
+        std::cout << "Usage is <infile> <n iterations> <population size> <mutation ratio>\n";
         return 0;
     }else{
         fileName = argv[1];
+        nIterations = atoi(argv[2]);
+        populationSize = atoi(argv[3]);
+        mutationRatio = atof(argv[4]);
     }
     input.open(fileName, std::ifstream::in);
     input >> nVehicles;
@@ -48,14 +51,14 @@ int main(int argc, char* argv[]){
         g.addVertex(id, duration, demand, x, y, DEPOT);
     }
     g.buildEdges();
-    MutSwap mutOp(0.1);
+    MutSwap mutOp(mutationRatio);
     CrCut crOp(nCustomers + nDepots);
     SelRol selOp;
 
     Operation op(mutOp, crOp, selOp);
     srand(time(0));
     MDVRPSolver solver(op);
-    solver.solve(g, maxRouteDuration, capacity, 1000, 0, 12);
+    solver.solve(g, maxRouteDuration, capacity, nIterations, 0, populationSize);
     return 0;
 }
 

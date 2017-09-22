@@ -16,6 +16,10 @@ Operation::Operation(MutationOperator& mutOp,
 
 }
 
+double Operation::mutationRatio() {
+    return mutationOperator.ratio();
+}
+
 void Operation::mutate(Individual& i) {
     /*
         Calls the mutatate methos of the MutateOperator.

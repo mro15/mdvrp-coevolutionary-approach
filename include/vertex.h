@@ -7,12 +7,14 @@
 #include <cstdlib>
 #include <cmath>
 
+#include <structs.h>
+
 #define CUSTOMER 0
 #define DEPOT 1
 
 class Vertex {
     private:
-        int _id, _type;
+        int _id, _type, _nRoutes;
         double x, y, duration, _demand;
         std::vector<double> distances;
 
@@ -23,7 +25,7 @@ class Vertex {
         int _nearestDepot;
         int* workSpace;
     public:
-        Vertex(int, double, double, double, double, int);
+        Vertex(int, double, double, double, double, int, int);
         ~Vertex();
         void debug();
         int id();
@@ -32,7 +34,7 @@ class Vertex {
 
         void setNeighborhood(Vertex **neighbors, double* distances, int length);
         double distanceTo(Vertex *vertex);
-        int kNeighborsRoute(int k);
+        std::vector<RouteImportance> nearRoutes(int k);
         int nearestDepot();
         void changeToRoute(int k);
         int type();

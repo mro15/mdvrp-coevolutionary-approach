@@ -125,6 +125,21 @@ void MDVRPSolver::migrate(Population **p, int length) {
     }
 
     std::sort(migrations.begin(), migrations.end());
+    bool did = false;
+    while(!migrations.empty() && !did) {
+        Migration& m = *migrations.begin();
+        //WARN: ids das rotas como indices
+        if(p[m.target]->canReceive(m.customer)) {
+            p[m.source]->removeClient(m.customer);
+            p[m.source]->compact(m.customer);
+            p[m.target]->addClient(m.customer);
+            p[m.target]->expand(m.customer);
+            did = true;
+        }
+        else {
+            migrations.erase(migrations.begin());
+        }
+    }
 
     return;
 }

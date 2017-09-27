@@ -4,9 +4,10 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <cstdlib>
 
 #include <vertex.h>
-#include <cstdlib>
+#include <structs.h>
 
 class Graph {
     private:
@@ -28,7 +29,7 @@ class Graph {
         void buildEdges();
         double distanceTo(int a, int b);
         bool setToRoute(int vertex, int population);
-        int kNeighborsRoute(int vertex, int k);
+        std::vector<RouteImportance> nearRoutes(int vertex, int k);
         void resetRoutes();
         int* depots();
         int* customers();

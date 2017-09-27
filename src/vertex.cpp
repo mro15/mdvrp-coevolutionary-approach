@@ -22,13 +22,14 @@ int compare (const void* a, const void* b) {
     }
 }
 
-Vertex::Vertex(int id, double duration, double _demand, double x, double y, int type){
+Vertex::Vertex(int id, double duration, double _demand, double x, double y, int type, int nRoutes){
    this->_id = id;
    this->duration = duration;
    this->_demand = _demand;
    this->x = x;
    this->y = y;
    this->_type = type;
+   this->_nRoutes = nRoutes;
    this->workSpace = NULL;
    this->sortedNeighbors = NULL;
 }
@@ -114,7 +115,7 @@ double Vertex::distanceTo(Vertex *vertex) {
     return sqrt(xFactor + yFactor);
 }
 
-int Vertex::kNeighborsRoute(int k) {
+std::vector<RouteImportance> Vertex::nearRoutes(int k) {
     /*
         Returns the most common route in the nearest k neighbors this vertex.
         Parameters: k, quantity of nearest neighbors to check.
@@ -125,7 +126,7 @@ int Vertex::kNeighborsRoute(int k) {
 
         returns 0 in error.
     */
-    for (int i = 0; i < nNeighbors && i < k; ++i) {
+    for (int i = 0; i < this->_nRoutes && i < k; ++i) {
         this->workSpace[i] = 0;
     }
 
@@ -133,15 +134,15 @@ int Vertex::kNeighborsRoute(int k) {
         ++this->workSpace[this->sortedNeighbors[i]->route];
     }
 
-    int biggest = 0, value = this->workSpace[0];
-    for (int i = 1; i < nNeighbors && i < k; ++i) {
-        if (this->workSpace[i] > value) {
-            biggest = i;
-            value = this->workSpace[i];
+    std::vector<RouteImportance> r;
+    for (int i = 0; i < this->_nRoutes && i < k; ++i) {
+        RouteImportance w = { route: i, importance: this->workSpace[i] };
+        if (this->workSpace[i] > 0) {
+            r.push_back(w);
         }
     }
 
-    return biggest;
+    return r;
 }
 
 int Vertex::nearestDepot() {

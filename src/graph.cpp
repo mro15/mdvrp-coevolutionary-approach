@@ -64,8 +64,9 @@ bool Graph::addVertex(int id, double duration, double demand, double x, double y
 
         Try to add the same vertex twice (same id) retruns false.
     */
+    int nRoutes = (this->_nDepots * this->_maxVehicles) +1;
     if (vertices[id] == NULL ) {
-        vertices[id] = new Vertex(id, duration, demand, x, y, type);
+        vertices[id] = new Vertex(id, duration, demand, x, y, type, nRoutes);
         return true;
     }
     else {
@@ -138,7 +139,7 @@ bool Graph::setToRoute(int vertex, int route) {
     return false;
 }
 
-int Graph::kNeighborsRoute(int vertex, int k) {
+std::vector<RouteImportance> Graph::nearRoutes(int vertex, int k) {
     /*
         Returns the most common route in the nearest k neighbors of a vertex.
         Parameters: vertex, vertex id
@@ -151,9 +152,12 @@ int Graph::kNeighborsRoute(int vertex, int k) {
         returns 0 in error.
     */
     if(vertex < _nVertices && vertex > -1) {
-        return this->vertices[vertex]->kNeighborsRoute(k);
+        return this->vertices[vertex]->nearRoutes(k);
     }
-    return 0;
+    else {
+        std::vector<RouteImportance> r;
+        return r;
+    }
 }
 
 void Graph::resetRoutes() {

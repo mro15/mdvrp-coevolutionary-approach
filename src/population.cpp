@@ -206,5 +206,37 @@ int Population::depot() {
 
 std::vector<Migration> Population::migration() {
     std::vector<Migration> r;
+    for(std::vector<int>::iterator i = this->customers.begin(); i != this->customers.end(); ++i) {
+        std::vector<RouteImportance> routes = graph.nearRoutes(*i, 3);
+        for(std::vector<RouteImportance>::iterator j = routes.begin(); j != routes.end(); ++j) {
+            int importance = (*j).importance;
+            if(!this->underCapacity()) {
+                importance += graph.demand(*i);
+            }
+
+            Migration m;
+            m.customer = *i;
+            m.source = this->_id;
+            m.target = (*j).route;
+            m.importance = importance;
+            r.push_back(m);
+        }
+    }
     return r;
+}
+
+void Population::compact(int id) {
+    for(int i = 0; i < this->_nIndividuals; ++i) {
+        this->individuals[i]->compact(id);
+    }
+}
+
+void Population::expand(int id) {
+    for(int i = 0; i < this->_nIndividuals; ++i) {
+        this->individuals[i]->expand(id);
+    }
+}
+
+bool Population::canReceive(int id) {
+    return (capacity + graph.demand(id)) < maxCapacity;
 }

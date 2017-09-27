@@ -6,6 +6,7 @@
 #include <operation.h>
 #include <vector>
 #include <algorithm>
+#include <structs.h>
 
 class Migration {
     public:
@@ -16,7 +17,7 @@ class Migration {
         bool operator<(const Migration& b) {
             return this->importance < b.importance;
         }
-};
+    };
 
 class Population {
     private:
@@ -32,6 +33,8 @@ class Population {
         void iterate();
         bool addClient(int id);
         bool removeClient(int id);
+        void compact(int id);
+        void expand(int id);
         void start();
         void restart();
         void clear();
@@ -40,7 +43,7 @@ class Population {
         bool underCapacity();
         int depot();
         std::vector<Migration> migration();
+        bool canReceive(int id);
 };
-
 
 #endif

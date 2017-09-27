@@ -79,3 +79,24 @@ void Individual::debug() {
     }
     printf("]");
 }
+
+void Individual::compact(int id) {
+    std::vector<int>::iterator remove;
+    bool found = false;
+    for(std::vector<int>::iterator i = this->_customers.begin(); i != this->_customers.end(); ++i ) {
+        if(*i == id) {
+            remove = i;
+            found = true;
+        }
+    }
+
+    if(found) {
+       this-> _customers.erase(remove);
+    }
+}
+
+void Individual::expand(int id) {
+    std::vector<int>::iterator remove;
+    int pos = rand()%(this->_customers.size()+1);
+    this->_customers.insert(this->_customers.begin()+pos, id);
+}

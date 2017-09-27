@@ -94,7 +94,7 @@ void Vertex::setNeighborhood(Vertex** neighbors, double* distances, int length) 
     this->sortedNeighbors = sortedNeighbors +2;
     // Remove 0 that is null and 1 that is himself
     this->nNeighbors = length -2;
-    this->workSpace = new int[this->nNeighbors];
+    this->workSpace = new int[this->_nRoutes];
     delete[] aux;
     return;
 }
@@ -126,6 +126,7 @@ std::vector<RouteImportance> Vertex::nearRoutes(int k) {
 
         returns 0 in error.
     */
+
     for (int i = 0; i < this->_nRoutes && i < k; ++i) {
         this->workSpace[i] = 0;
     }

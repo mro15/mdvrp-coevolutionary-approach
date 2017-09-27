@@ -45,6 +45,9 @@ void MDVRPSolver::solve( Graph& g,
         for(int j = 1; j < length; ++j) {
             population[j]->iterate();
         }
+        if (i%itToMigrate == 0) {
+            this->migrate(population, length);
+        }
     }
 
     int capacityFeasible = 0;
@@ -119,7 +122,7 @@ Population** MDVRPSolver::initPopulations(Graph& g, double maxDuration, double c
 
 void MDVRPSolver::migrate(Population **p, int length) {
     std::vector<Migration> migrations;
-    for(int i = 0; i < length; ++i) {
+    for(int i = 1; i < length; ++i) {
         std::vector<Migration> m = p[i]->migration();
         migrations.insert(migrations.end(), m.begin(), m.end());
     }

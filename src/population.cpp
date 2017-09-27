@@ -214,12 +214,14 @@ std::vector<Migration> Population::migration() {
                 importance += graph.demand(*i);
             }
 
-            Migration m;
-            m.customer = *i;
-            m.source = this->_id;
-            m.target = (*j).route;
-            m.importance = importance;
-            r.push_back(m);
+            if((*j).route != 0) {
+                Migration m;
+                m.customer = *i;
+                m.source = this->_id;
+                m.target = (*j).route;
+                m.importance = importance;
+                r.push_back(m);
+            }
         }
     }
     return r;

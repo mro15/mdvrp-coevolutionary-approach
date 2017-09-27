@@ -15,18 +15,19 @@
 #include <ctime>
 
 int main(int argc, char* argv[]){
-    int nCustomers, nDepots, nVehicles, nIterations, populationSize;
+    int nCustomers, nDepots, nVehicles, nIterations, populationSize, itToMigrate;
     double maxRouteDuration, capacity, mutationRatio;
     std::fstream input;
     char* fileName;
-    if(argc!=5){
-        std::cout << "Usage is <infile> <n iterations> <population size> <mutation ratio>\n";
+    if(argc!=6){
+        std::cout << "Usage is <infile> <n iterations> <n iterations to Migrate> <population size> <mutation ratio>\n";
         return 0;
     }else{
         fileName = argv[1];
         nIterations = atoi(argv[2]);
-        populationSize = atoi(argv[3]);
-        mutationRatio = atof(argv[4]);
+        itToMigrate = atoi(argv[3]);
+        populationSize = atoi(argv[4]);
+        mutationRatio = atof(argv[5]);
     }
     input.open(fileName, std::ifstream::in);
     input >> nVehicles;
@@ -58,7 +59,7 @@ int main(int argc, char* argv[]){
     Operation op(mutOp, crOp, selOp);
     srand(time(0));
     MDVRPSolver solver(op);
-    solver.solve(g, maxRouteDuration, capacity, nIterations, 0, populationSize);
+    solver.solve(g, maxRouteDuration, capacity, nIterations, itToMigrate, populationSize);
     return 0;
 }
 

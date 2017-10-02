@@ -15,7 +15,8 @@ class Migration {
         int target;
         int importance; // Se a rota está estourada é grande (conta mágica)
         bool operator<(const Migration& b) {
-            return this->importance < b.importance;
+            //This operator is reversed to create a sort in descending order
+            return this->importance > b.importance;
         }
     };
 
@@ -44,6 +45,7 @@ class Population {
         int depot();
         std::vector<Migration> migration();
         bool canReceive(int id);
+        void debug();
 };
 
 #endif

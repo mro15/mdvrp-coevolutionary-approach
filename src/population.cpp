@@ -106,6 +106,7 @@ bool Population::removeClient(int id) {
     }
     if (find) {
         customers.erase(toRemove);
+        capacity -= graph.demand(id);
         return true;
     }
 
@@ -207,14 +208,14 @@ int Population::depot() {
 std::vector<Migration> Population::migration() {
     std::vector<Migration> r;
     for(std::vector<int>::iterator i = this->customers.begin(); i != this->customers.end(); ++i) {
-        std::vector<RouteImportance> routes = graph.nearRoutes(*i, 3);
+        std::vector<RouteImportance> routes = graph.nearRoutes(*i, 5);
         for(std::vector<RouteImportance>::iterator j = routes.begin(); j != routes.end(); ++j) {
             int importance = (*j).importance;
             if(!this->underCapacity()) {
                 importance += graph.demand(*i);
             }
 
-            if((*j).route != 0) {
+            if((*j).route != 0 && (*j).route != this->_id) {
                 Migration m;
                 m.customer = *i;
                 m.source = this->_id;
@@ -241,4 +242,8 @@ void Population::expand(int id) {
 
 bool Population::canReceive(int id) {
     return (capacity + graph.demand(id)) < maxCapacity;
+}
+
+void Population::debug() {
+    printf("(%d) => {%lf/%lf}\n", _id, capacity, maxCapacity);
 }

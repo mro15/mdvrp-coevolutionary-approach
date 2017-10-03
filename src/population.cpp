@@ -215,7 +215,13 @@ std::vector<Migration> Population::migration() {
                 importance += graph.demand(*i);
             }
 
-            if((*j).route != 0 && (*j).route != this->_id) {
+            bool repeat = false;
+            for(std::vector<Migration>::iterator k = history.begin(); k != history.end(); ++k) {
+                if((*k).target==(*j).route){
+                    repeat = true;
+                }
+            }
+            if((*j).route != 0 && (*j).route != this->_id && !repeat) {
                 Migration m;
                 m.customer = *i;
                 m.source = this->_id;
@@ -246,4 +252,8 @@ bool Population::canReceive(int id) {
 
 void Population::debug() {
     printf("(%d) => {%lf/%lf}\n", _id, capacity, maxCapacity);
+}
+
+void Population::saveHistory(Migration m) {
+    this->history.push_back(m);
 }

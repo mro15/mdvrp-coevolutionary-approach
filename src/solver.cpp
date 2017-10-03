@@ -137,6 +137,7 @@ void MDVRPSolver::migrate(Population **p, int length) {
             p[m.source]->compact(m.customer);
             p[m.target]->addClient(m.customer);
             p[m.target]->expand(m.customer);
+            p[m.source]->saveHistory(m);
             did = true;
         }
         else {

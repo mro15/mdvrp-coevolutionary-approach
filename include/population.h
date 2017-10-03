@@ -26,6 +26,7 @@ class Population {
         Operation& operation;
         Graph& graph;
         std::vector<int> customers;
+        std::vector<Migration> history; 
         int _depot, _id, _nIndividuals;
         double maxDuration, maxCapacity;
         double capacity;
@@ -45,6 +46,7 @@ class Population {
         int depot();
         std::vector<Migration> migration();
         bool canReceive(int id);
+        void saveHistory(Migration m);
         void debug();
 };
 

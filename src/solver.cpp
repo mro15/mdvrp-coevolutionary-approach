@@ -11,6 +11,7 @@ MDVRPSolver::MDVRPSolver(Operation& op): operation(op) {
     /*
         Creates a instance of the solver
     */
+    bestResult=0;
 }
 
 void MDVRPSolver::solve( Graph& g,
@@ -36,7 +37,7 @@ void MDVRPSolver::solve( Graph& g,
     */
     Population ** population = this->initPopulations(g, maxDuration, capacity, nIndividuals);
 
-    int length = g.nDepots()*g.maxVehicles() +1;
+    int length = g.nDepots()*g.maxVehicles() +1, searchSpace = 5;
     for(int i = 1; i < length; ++i) {
         population[i]->start();
     }
@@ -46,7 +47,19 @@ void MDVRPSolver::solve( Graph& g,
             population[j]->iterate();
         }
         if (i%itToMigrate == 0) {
-            this->migrate(population, length);
+            if(bestResult != 0) {
+                double result = population[lastMigration.source]->best()->duration();
+                result += population[lastMigration.target]->best()->duration();
+                if(result > bestResult && population[lastMigration.source]->canReceive(lastMigration.customer)) {
+                    population[lastMigration.target]->removeClient(lastMigration.customer);
+                    population[lastMigration.target]->compact(lastMigration.customer);
+                    population[lastMigration.source]->addClient(lastMigration.customer);
+                    population[lastMigration.source]->expand(lastMigration.customer);
+                    population[lastMigration.target]->saveHistory(lastMigration);
+                }
+                searchSpace++;
+            }
+            this->migrate(population, length, searchSpace);
         }
     }
 
@@ -120,24 +133,27 @@ Population** MDVRPSolver::initPopulations(Graph& g, double maxDuration, double c
     return r;
 }
 
-void MDVRPSolver::migrate(Population **p, int length) {
+void MDVRPSolver::migrate(Population **p, int length, int searchSpace) {
     std::vector<Migration> migrations;
     for(int i = 1; i < length; ++i) {
-        std::vector<Migration> m = p[i]->migration();
+        std::vector<Migration> m = p[i]->migration(searchSpace);
         migrations.insert(migrations.end(), m.begin(), m.end());
     }
 
     std::sort(migrations.begin(), migrations.end());
     bool did = false;
+    bestResult = 0;
     while(!migrations.empty() && !did) {
         Migration& m = *migrations.begin();
         //WARN: ids das rotas como indices
         if(p[m.target]->canReceive(m.customer)) {
+            bestResult = p[m.source]->best()->duration() + p[m.target]->best()->duration();
             p[m.source]->removeClient(m.customer);
             p[m.source]->compact(m.customer);
             p[m.target]->addClient(m.customer);
             p[m.target]->expand(m.customer);
             p[m.source]->saveHistory(m);
+            lastMigration = m;
             did = true;
         }
         else {

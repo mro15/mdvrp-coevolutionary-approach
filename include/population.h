@@ -44,7 +44,7 @@ class Population {
         Individual* best();
         bool underCapacity();
         int depot();
-        std::vector<Migration> migration();
+        std::vector<Migration> migration(int searchSpace);
         bool canReceive(int id);
         void saveHistory(Migration m);
         void debug();

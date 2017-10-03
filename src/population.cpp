@@ -205,10 +205,10 @@ int Population::depot() {
     return this->_depot;
 }
 
-std::vector<Migration> Population::migration() {
+std::vector<Migration> Population::migration(int searchSpace) {
     std::vector<Migration> r;
     for(std::vector<int>::iterator i = this->customers.begin(); i != this->customers.end(); ++i) {
-        std::vector<RouteImportance> routes = graph.nearRoutes(*i, 5);
+        std::vector<RouteImportance> routes = graph.nearRoutes(*i, searchSpace);
         for(std::vector<RouteImportance>::iterator j = routes.begin(); j != routes.end(); ++j) {
             int importance = (*j).importance;
             if(!this->underCapacity()) {

@@ -37,7 +37,7 @@ void MDVRPSolver::solve( Graph& g,
     */
     Population ** population = this->initPopulations(g, maxDuration, capacity, nIndividuals);
 
-    int length = g.nDepots()*g.maxVehicles() +1, searchSpace = 5;
+    int length = g.nDepots()*g.maxVehicles() +1, searchSpace = 3;
     for(int i = 1; i < length; ++i) {
         population[i]->start();
     }
@@ -48,8 +48,15 @@ void MDVRPSolver::solve( Graph& g,
         }
         if (i%itToMigrate == 0) {
             if(bestResult != 0) {
-                double result = population[lastMigration.source]->best()->duration();
-                result += population[lastMigration.target]->best()->duration();
+                double result = 0;
+                Individual* ind = population[lastMigration.source]->best();
+                if(ind != NULL) {
+                    result += ind->duration();
+                }
+                ind = population[lastMigration.target]->best();
+                if(ind != NULL) {
+                    result += ind->duration();
+                }
                 if(result > bestResult && population[lastMigration.source]->canReceive(lastMigration.customer)) {
                     population[lastMigration.target]->removeClient(lastMigration.customer);
                     population[lastMigration.target]->compact(lastMigration.customer);
@@ -57,7 +64,7 @@ void MDVRPSolver::solve( Graph& g,
                     population[lastMigration.source]->expand(lastMigration.customer);
                     population[lastMigration.target]->saveHistory(lastMigration);
                 }
-                searchSpace++;
+                searchSpace += (searchSpace < 7)? 1 : 0;
             }
             this->migrate(population, length, searchSpace);
         }

@@ -19,6 +19,8 @@ class Graph {
         int* _customers;
         int* _depots;
         int _maxVehicles;
+        int** assignment1();
+        int** assignment2();
     public:
         Graph(int nCustomers, int nDepots, int _maxVehicles);
         ~Graph();

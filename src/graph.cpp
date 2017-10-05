@@ -193,6 +193,10 @@ int Graph::maxVehicles() {
 }
 
 int** Graph::assignment() {
+    return this->assignment2();
+}
+
+int** Graph::assignment1() {
     this->resetRoutes();
     int nRoutes = this->_nDepots * this->_maxVehicles;
     int **r = new int*[nRoutes];
@@ -310,6 +314,62 @@ int** Graph::assignment() {
     }*/
     return r;
 }
+
+int** Graph::assignment2() {
+    this->resetRoutes();
+    int nRoutes = this->_nDepots * this->_maxVehicles;
+    int **r = new int*[nRoutes], *last = new int[_maxVehicles];
+    for(int i = 0; i < nRoutes; ++i) {
+        r[i] = new int[this->_nVertices];
+        for(int j = 1; j < this->_nVertices; ++j) {
+            r[i][j] = 0;
+        }
+    }
+
+    for(int i = 0; i < this->_nDepots; ++i) {
+        for(int j = 1; j < this->_nVertices; ++j) {
+            if (this->vertices[j]->nearestDepot() == this->_depots[i]) {
+                r[i*this->_maxVehicles][j] = 1;
+            }
+            else {
+                r[i*this->_maxVehicles][j] = 0;
+            }
+        }
+    }
+    for(int i=0; i < this->_nDepots; ++i){
+        for(int j=0; j < _maxVehicles; ++j){
+            last[j] = this->_depots[i];
+        }
+        bool allAssigned = false;
+        while(!allAssigned){
+            for(int k=0; k < _maxVehicles; k++){
+                Vertex* vertex = this->vertices[last[k]];
+                int next = vertex->nearest(this->_depots[i]);
+                if(next == -1) {
+                    allAssigned = true;
+                }
+                else {
+                    this->vertices[next]->changeToRoute(i*_maxVehicles+k +1);
+                    r[i*_maxVehicles][next] = 0;
+                    r[i*_maxVehicles+k][next] = 1;
+                    last[k] = next;
+                }
+            }
+        }
+        r[i*_maxVehicles][this->_depots[i]] = 0;
+        this->vertices[this->_depots[i]]->changeToRoute(0);
+    }
+
+    /*for(int k = 0; k < this->_nDepots*_maxVehicles; ++k) {
+        printf("(%d)[%d", k+1, r[k][1]);
+        for(int j = 2; j < this->_nVertices; ++j) {
+            printf(", %d", r[k][j]);
+        }
+        printf("]\n");
+    }*/
+    return r;
+}
+
 
 double Graph::demand(int vertex) {
     return this->vertices[vertex]->demand();

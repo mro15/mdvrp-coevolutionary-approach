@@ -75,11 +75,11 @@ std::vector<int>& Individual::customers() {
 }
 
 void Individual::debug() {
-    printf("[");
+    printf("[%d, ", this->_depot);
     for (std::vector<int>::iterator it = _customers.begin() ; it != _customers.end(); ++it) {
         printf("%d, ", *it);
     }
-    printf("]");
+    printf("%d]", this->_depot);
 }
 
 void Individual::compact(int id) {
@@ -101,4 +101,18 @@ void Individual::expand(int id) {
     std::vector<int>::iterator remove;
     int pos = rand()%(this->_customers.size()+1);
     this->_customers.insert(this->_customers.begin()+pos, id);
+}
+
+void Individual::streamTo(std::ostream& os) const {
+    os << "[" << this->_depot << ", ";
+    for (std::vector<int>::const_iterator it = _customers.begin() ; it != _customers.end(); ++it) {
+        os << *it << ", ";
+    }
+    os << this->_depot << "]";
+}
+
+std::ostream& operator<<(std::ostream& os, const Individual& i) {
+    i.streamTo(os);
+    os << " ";
+    return os;
 }

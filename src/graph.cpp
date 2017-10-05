@@ -378,3 +378,16 @@ double Graph::demand(int vertex) {
 double Graph::duration(int vertex) {
     return this->vertices[vertex]->duration();
 }
+
+void Graph::streamTo(std::ostream& os) const {
+    os << "[";
+    for(int i = 1; i < this->_nVertices; ++i) {
+        os << *this->vertices[i] << ", ";
+    }
+    os << "]";
+}
+
+std::ostream& operator<<(std::ostream& os, const Graph& g) {
+    g.streamTo(os);
+    return os;
+}

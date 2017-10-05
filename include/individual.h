@@ -1,4 +1,5 @@
 #ifndef __INDIVIDUAL_H
+#define __INDIVIDUAL_H
 
 #include <iostream>
 #include <graph.h>
@@ -23,7 +24,9 @@ class Individual {
         bool feasible();
         std::vector<int>& customers();
         void debug();
+        void streamTo(std::ostream& os) const;
 };
 
-#define __INDIVIDUAL_H
+std::ostream& operator<<(std::ostream& os, const Individual& i);
+
 #endif

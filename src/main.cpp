@@ -62,7 +62,7 @@ int main(int argc, char* argv[]){
 
     Operation op(mutOp, crOp, selOp);
     srand(seed);
-    MDVRPSolver solver(op);
+    MDVRPSolver solver(op, seed);
     solver.solve(g, maxRouteDuration, capacity, nIterations, itToMigrate, populationSize);
     return 0;
 }

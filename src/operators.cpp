@@ -10,11 +10,17 @@
 MutSwap::MutSwap(double probability) {
     this->_probability = 100*probability;
     this->_ratio = probability;
+    this->_name = "MutSwap";
 }
 
 CrCut::CrCut(int nCustomers) {
     this->length = nCustomers;
     this->workSpace = new int[nCustomers];
+    this->_name = "CrCut";
+}
+
+SelRol::SelRol() {
+    this->_name = "SelRol";
 }
 
 
@@ -134,4 +140,8 @@ Individual*** SelRol::select(Individual** individuals, int length) {
 
     delete[] prop;
     return r;
+}
+
+const char* Operator::name() {
+    return _name;
 }

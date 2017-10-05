@@ -7,11 +7,12 @@
 */
 #include <solver.h>
 
-MDVRPSolver::MDVRPSolver(Operation& op): operation(op) {
+MDVRPSolver::MDVRPSolver(Operation& op, int seed): operation(op) {
     /*
         Creates a instance of the solver
     */
     bestResult=0;
+    this->seed = seed;
 }
 
 void MDVRPSolver::solve( Graph& g,
@@ -36,6 +37,7 @@ void MDVRPSolver::solve( Graph& g,
         returns NULL in error or impossibility to solve.
     */
     Population ** population = this->initPopulations(g, maxDuration, capacity, nIndividuals);
+    const char* assignment = "furtherCluster";
 
     int length = g.nDepots()*g.maxVehicles() +1, searchSpace = 3;
     for(int i = 1; i < length; ++i) {
@@ -73,13 +75,24 @@ void MDVRPSolver::solve( Graph& g,
     int capacityFeasible = 0;
     int durationFeasible = 0;
     double fitness = 0.0;
-    printf("\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+    char header[300];
+    char line[300];
+    sprintf(header,
+        "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+        "Seed",
         "N° Individuals",
         "Mutation Ratio",
         "Iterations",
         "Duration",
         "Capacity",
-        "Duration");
+        "Duration",
+        "N° Routes",
+        "Assignment",
+        "Mutation Operator",
+        "Crossover Operator",
+        "Selection Operator",
+        "Routes",
+        "Graph");
     for(int i = 1; i < length; ++i) {
         Individual* best = population[i]->best();
         if(best != NULL) {
@@ -97,15 +110,33 @@ void MDVRPSolver::solve( Graph& g,
             }
         }
     }
-    printf("\"%d\";\"%lf\";\"%d\";\"%lf\";\"(%d/%d)\";\"(%d/%d)\"\n",
+    sprintf(line,
+        "\"%d\";\"%d\";\"%lf\";\"%d\";\"%lf\";\"%d\";\"%d\";\"%d\";\"%s\";\"%s\";\"%s\";\"%s\";\"[",
+        this->seed,
         nIndividuals,
         operation.mutationRatio(),
         iterations,
         fitness,
         capacityFeasible,
-        length -1,
         durationFeasible,
-        length -1);
+        length -1,
+        assignment,
+        operation.mutName(),
+        operation.crName(),
+        operation.selName());
+
+    std::cout << header << line;
+    /*for(int i = 1; i < length; ++i) {
+        Individual* best = population[i]->best();
+        if(best != NULL) {
+            std::cout << *best << ",";
+        }
+
+        else {
+            std::cout << "[],";
+        }
+    }*/
+    std::cout << "]\";\""/* << g*/ << "\"\n";
 }
 
 Population** MDVRPSolver::initPopulations(Graph& g, double maxDuration, double capacity, int nIndividuals) {

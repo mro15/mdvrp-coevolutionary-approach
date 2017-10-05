@@ -41,3 +41,15 @@ Individual*** Operation::select(Individual** i, int length) {
     */
     return selectionOperator.select(i, length);
 }
+
+const char* Operation::mutName() {
+    return mutationOperator.name();
+}
+
+const char* Operation::crName() {
+    return crossoverOperator.name();
+}
+
+const char* Operation::selName() {
+    return selectionOperator.name();
+}

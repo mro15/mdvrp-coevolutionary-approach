@@ -17,6 +17,9 @@ class Operation {
         double mutationRatio();
         Individual** crossover(Individual** i);
         Individual*** select(Individual** i, int length);
+        const char* mutName();
+        const char* crName();
+        const char* selName();
 };
 
 #define __OPERATION_H

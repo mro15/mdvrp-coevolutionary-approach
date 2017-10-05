@@ -42,6 +42,9 @@ class Vertex {
         int nearest(int depot);
         double demand();
         double duration();
+        void streamTo(std::ostream& os) const;
 };
+
+std::ostream& operator<<(std::ostream& os, const Vertex& v);
 
 #endif

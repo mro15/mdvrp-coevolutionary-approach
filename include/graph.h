@@ -41,6 +41,9 @@ class Graph {
         int maxVehicles();
         double demand(int vertex);
         double duration(int vertex);
+        void streamTo(std::ostream& os) const;
 };
+
+std::ostream& operator<<(std::ostream& os, const Graph& g);
 
 #endif

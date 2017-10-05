@@ -22,9 +22,9 @@ int compare (const void* a, const void* b) {
     }
 }
 
-Vertex::Vertex(int id, double duration, double _demand, double x, double y, int type, int nRoutes){
+Vertex::Vertex(int id, double _duration, double _demand, double x, double y, int type, int nRoutes){
    this->_id = id;
-   this->duration = duration;
+   this->_duration = _duration;
    this->_demand = _demand;
    this->x = x;
    this->y = y;
@@ -222,4 +222,8 @@ int Vertex::nearest(int depot) {
 
 double Vertex::demand() {
     return this->_demand;
+}
+
+double Vertex::duration() {
+    return this->_duration;
 }

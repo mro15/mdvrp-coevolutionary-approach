@@ -374,3 +374,7 @@ int** Graph::assignment2() {
 double Graph::demand(int vertex) {
     return this->vertices[vertex]->demand();
 }
+
+double Graph::duration(int vertex) {
+    return this->vertices[vertex]->duration();
+}

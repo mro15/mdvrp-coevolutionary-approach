@@ -46,11 +46,13 @@ double Individual::duration() {
     */
 
     double duration = _graph.distanceTo(this->_depot, *(_customers.begin()));
+    duration += _graph.duration(*(_customers.begin()));
     for (std::vector<int>::iterator it = _customers.begin()+1 ; it != _customers.end(); ++it) {
         duration += _graph.distanceTo(*(it -1), *it);
+        duration += _graph.duration(*it);
     }
 
-    return duration + _graph.distanceTo(*(_customers.end()), this->_depot);
+    return duration + _graph.distanceTo(_customers.back(), this->_depot);
 }
 
 bool Individual::feasible() {

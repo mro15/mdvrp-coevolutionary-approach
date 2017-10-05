@@ -15,7 +15,7 @@
 class Vertex {
     private:
         int _id, _type, _nRoutes;
-        double x, y, duration, _demand;
+        double x, y, _duration, _demand;
         std::vector<double> distances;
 
         Vertex ** sortedNeighbors;
@@ -41,6 +41,7 @@ class Vertex {
         int furthest(int depot, int index);
         int nearest(int depot);
         double demand();
+        double duration();
 };
 
 #endif

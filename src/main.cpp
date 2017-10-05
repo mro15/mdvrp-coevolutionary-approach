@@ -19,8 +19,9 @@ int main(int argc, char* argv[]){
     double maxRouteDuration, capacity, mutationRatio;
     std::fstream input;
     char* fileName;
-    if(argc!=6){
-        std::cout << "Usage is <infile> <n iterations> <n iterations to Migrate> <population size> <mutation ratio>\n";
+    int seed = time(0);
+    if(!(argc==6 || argc==7 )){
+        std::cout << "Usage is <infile> <n iterations> <n iterations to Migrate> <population size> <mutation ratio> [<seed>]\n";
         return 0;
     }else{
         fileName = argv[1];
@@ -28,6 +29,9 @@ int main(int argc, char* argv[]){
         itToMigrate = atoi(argv[3]);
         populationSize = atoi(argv[4]);
         mutationRatio = atof(argv[5]);
+        if(argc == 7) {
+            seed = atoi(argv[6]);
+        }
     }
     input.open(fileName, std::ifstream::in);
     input >> nVehicles;
@@ -57,7 +61,7 @@ int main(int argc, char* argv[]){
     SelRol selOp;
 
     Operation op(mutOp, crOp, selOp);
-    srand(time(0));
+    srand(seed);
     MDVRPSolver solver(op);
     solver.solve(g, maxRouteDuration, capacity, nIterations, itToMigrate, populationSize);
     return 0;

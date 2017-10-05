@@ -40,6 +40,7 @@ class Graph {
         int nDepots();
         int maxVehicles();
         double demand(int vertex);
+        double duration(int vertex);
 };
 
 #endif

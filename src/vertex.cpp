@@ -229,8 +229,7 @@ double Vertex::duration() {
 }
 
 void Vertex::streamTo(std::ostream& os) const {
-    printf("{ id: %d, x: %lf, y: %lf, r: %d }", _id, x, y , route);
-    os << "{ id:" << _id << ", x:" << x << ", y:" << y << ", route:" << route << " }";
+    os << "{ id: " << _id << ", x: " << x << ", y: " << y << ", route: " << route << " }";
 }
 
 std::ostream& operator<<(std::ostream& os, const Vertex& v) {

@@ -193,7 +193,7 @@ int Graph::maxVehicles() {
 }
 
 int** Graph::assignment() {
-    return this->assignment2();
+    return this->assignment1();
 }
 
 int** Graph::assignment1() {

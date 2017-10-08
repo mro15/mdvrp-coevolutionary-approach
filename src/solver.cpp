@@ -78,7 +78,7 @@ void MDVRPSolver::solve( Graph& g,
     char header[300];
     char line[300];
     sprintf(header,
-        "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+        "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
         "Seed",
         "N° Individuals",
         "Mutation Ratio",
@@ -87,6 +87,7 @@ void MDVRPSolver::solve( Graph& g,
         "Capacity",
         "Duration",
         "N° Routes",
+        "N° Depots",
         "Assignment",
         "Mutation Operator",
         "Crossover Operator",
@@ -111,7 +112,7 @@ void MDVRPSolver::solve( Graph& g,
         }
     }
     sprintf(line,
-        "\"%d\";\"%d\";\"%lf\";\"%d\";\"%lf\";\"%d\";\"%d\";\"%d\";\"%s\";\"%s\";\"%s\";\"%s\";\"[",
+        "\"%d\";\"%d\";\"%lf\";\"%d\";\"%lf\";\"%d\";\"%d\";\"%d\";\"%d\";\"%s\";\"%s\";\"%s\";\"%s\";\"[",
         this->seed,
         nIndividuals,
         operation.mutationRatio(),
@@ -120,6 +121,7 @@ void MDVRPSolver::solve( Graph& g,
         capacityFeasible,
         durationFeasible,
         length -1,
+        g.nDepots(),
         assignment,
         operation.mutName(),
         operation.crName(),
@@ -136,7 +138,7 @@ void MDVRPSolver::solve( Graph& g,
             std::cout << "[],";
         }
     }*/
-    std::cout << "]\";\""/* << g*/ << "\"\n";
+    std::cout << "]\";\"" << g << "\"\n";
 }
 
 Population** MDVRPSolver::initPopulations(Graph& g, double maxDuration, double capacity, int nIndividuals) {

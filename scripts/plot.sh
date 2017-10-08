@@ -44,9 +44,25 @@ for i in $instances; do
     echo "set xzeroaxis" >> ../plot/$i.plot
     echo "set yzeroaxis" >> ../plot/$i.plot
     echo "plot \\" >> ../plot/$i.plot
-    ../main ../instances/$i > tmp.out
-    max=$(cat tmp.out | cut -d: -f4 | sort -n | sed -e "s/^ //"| tail -n1)
-    depots=$(cat tmp.out | cut -d: -f4 | grep "^ 0" | wc -l)
+    ../main ../instances/$i 100 10 100 0.125 1> tmp.csv
+    cols=$(head -n1 tmp.csv | sed -e 's/\ /_/g' | sed -e 's/\;/ /g' | sed -e 's/\"//g')
+    max=0
+    k=1
+    depots=0
+    data=""
+    for c in $cols; do
+        if [[ $c == "N°_Routes" ]]; then
+            max=$(tail -n1 tmp.csv | cut -f$k -d';' | sed -e 's/\"//g');
+        fi
+        if [[ $c == "N°_Depots" ]]; then
+            depots=$( tail -n1 tmp.csv | cut -f$k -d';' | sed -e 's/\"//g');
+        fi
+        if [[ $c == "Graph" ]]; then
+            data=$k
+        fi
+        k=$(( $k +1))
+    done
+
     vehicles=$(($max/$depots))
     inc=0
     count=0
@@ -82,8 +98,9 @@ for i in $instances; do
     done
     echo >> ../plot/$i.plot
     for j in $(seq 0 $max); do
-        cat tmp.out | grep "route: $j:" | sed -e "s/x:\ //" | \
-           sed -e "s/y:\ //" | sed -e "s/ route: $j://"  >> ../plot/$i.plot
+        tail -n1 tmp.csv | cut -d';' -f$data | sed -e 's/\"\[\|,\ \]//g' | sed -e 's/\}\,/}\n/g' \
+        | grep "route: $j " | sed -e "s/x:\ //" | \
+           sed -e "s/y:\ //" | cut -d',' -f2-3 | sed -e 's/^\ //'  >> ../plot/$i.plot
         if [[ $j -ne $max ]]; then
             echo "e" >> ../plot/$i.plot
         fi
@@ -91,4 +108,6 @@ for i in $instances; do
 
 done
 
-rm tmp.out
+rm tmp.csv
+
+####cat tmp.out | cut -d';' -f14 | sed -e 's/\"\[\|,\ \]//g' | sed -e 's/\}\,/}\n/g'

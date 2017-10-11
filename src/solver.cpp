@@ -138,7 +138,7 @@ void MDVRPSolver::solve( Graph& g,
             std::cout << "[],";
         }
     }*/
-    std::cout << "]\";\"" << g << "\"\n";
+    std::cout << "]\";\"" /*<< g*/ << "\"\n";
 }
 
 Population** MDVRPSolver::initPopulations(Graph& g, double maxDuration, double capacity, int nIndividuals) {

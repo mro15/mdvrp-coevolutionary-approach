@@ -58,7 +58,7 @@ int main(int argc, char* argv[]){
     g.buildEdges();
     MutSwap mutOp(mutationRatio);
     CrCut crOp(nCustomers + nDepots);
-    SelRol selOp;
+    SelTour selOp(10);
 
     Operation op(mutOp, crOp, selOp);
     srand(seed);

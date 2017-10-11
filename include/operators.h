@@ -4,6 +4,7 @@
 #include <individual.h>
 #include <iostream>
 #include <cstdlib>
+#include <algorithm>
 
 class Operator {
     protected:
@@ -50,6 +51,14 @@ class CrCut : public CrossOverOperator {
 class SelRol : public SelectionOperator {
     public:
         SelRol();
+        Individual*** select(Individual** i, int length);
+};
+
+class SelTour : public SelectionOperator {
+    private:
+        int poolSize;
+    public:
+        SelTour(int poolSize);
         Individual*** select(Individual** i, int length);
 };
 #endif

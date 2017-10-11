@@ -23,6 +23,11 @@ SelRol::SelRol() {
     this->_name = "SelRol";
 }
 
+SelTour::SelTour(int poolSize) {
+    this->_name = "SelTour";
+    this->poolSize = poolSize;
+}
+
 
 void MutSwap::mutate(Individual& i) {
     int chance = rand()%100;
@@ -86,6 +91,35 @@ Individual** CrCut::crossover(Individual** i) {
     }
 
     return offspring;
+}
+
+Individual*** SelTour::select(Individual** individuals, int length) {
+    Individual *** r = new Individual**[length/2];
+    int best1=0, best2=0;
+    std::vector<int>ind;
+    for(int i=0; i<length; ++i){
+        ind.push_back(i);
+    }
+    for(int j = 0; j < length/2; ++j) {
+        r[j] = new Individual*[2];
+        random_shuffle(ind.begin(), ind.end());
+        best1 = ind[0];
+        for(int i=1; i<this->poolSize; ++i){
+            if(individuals[ind[i]]->fitness() > individuals[best1]->fitness()){
+                best1 = ind[i];
+            }
+        }
+        r[j][0] = individuals[best1];
+        random_shuffle(ind.begin(), ind.end());
+        best2 = ind[0];
+        for(int i=1; i<this->poolSize; ++i){
+            if(individuals[ind[i]]->fitness() > individuals[best2]->fitness()){
+                best2 = ind[i];
+            }
+        }
+        r[j][1] = individuals[best2];
+    }
+    return r;
 }
 
 Individual*** SelRol::select(Individual** individuals, int length) {

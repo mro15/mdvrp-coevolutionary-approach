@@ -234,6 +234,24 @@ std::vector<Migration> Population::migration(int searchSpace) {
     return r;
 }
 
+
+Individual* Population::getIndividual(int k) {
+    if(k >=0 &&  k < this->_nIndividuals) {
+        return individuals[k];
+    }
+
+    return NULL;
+}
+
+bool Population::setIndividual(Individual* i, int k) {
+    if(k >=0 &&  k < this->_nIndividuals && i != NULL) {
+        individuals[k] = i;
+        return true;
+    }
+
+    return false;
+}
+
 void Population::compact(int id) {
     for(int i = 0; i < this->_nIndividuals; ++i) {
         this->individuals[i]->compact(id);

@@ -17,11 +17,12 @@ class MDVRPSolver {
         Graph& g;
         Population** initPopulations(int redudancy);
         void migrate(Population **p, int length, int redundancy, int searchSpace);
-        void output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int seed);
+        void output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int itToInnnerMig, int seed);
         void undoMigration(Population **p, int segment, int redundancy);
+        void innerRouteMigration(Population** p, int segment, int redundancy);
     public:
         MDVRPSolver(Operation& op, Graph&g, double maxDuration, double capacity, int nIndividuals);
-        void solve(int iterations, int itToMigrate, int redudancy, int seed);
+        void solve(int iterations, int itToMigrate, int redudancy, int itToInnerMig, int seed);
 };
 
 #endif

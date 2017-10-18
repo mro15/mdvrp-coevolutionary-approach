@@ -42,6 +42,8 @@ class Population {
         void clear();
         int badClient();
         Individual* best();
+        Individual* getIndividual(int k);
+        bool setIndividual(Individual* i, int k);
         bool underCapacity();
         int depot();
         std::vector<Migration> migration(int searchSpace);

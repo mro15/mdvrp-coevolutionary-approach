@@ -26,6 +26,7 @@ MDVRPSolver::MDVRPSolver(Operation& op,
 void MDVRPSolver::solve( int iterations,
                          int itToMigrate,
                          int redundancy,
+                         int itToInnerMig,
                          int seed ) {
     /*
         Solve the MDVRP.
@@ -59,6 +60,9 @@ void MDVRPSolver::solve( int iterations,
                 population[j + r*segment]->iterate();
             }
         }
+        if (i%itToInnerMig == 0) {
+            this->innerRouteMigration(population, segment, redundancy);
+        }
         if (i%itToMigrate == 0) {
             if(bestResult != 0) {
                 double result = 0;
@@ -83,7 +87,7 @@ void MDVRPSolver::solve( int iterations,
         }
     }
 
-    this->output(population, segment, redundancy, iterations, itToMigrate, seed);
+    this->output(population, segment, redundancy, iterations, itToMigrate, itToInnerMig, seed);
 }
 
 Population** MDVRPSolver::initPopulations(int redundancy) {
@@ -183,7 +187,24 @@ void MDVRPSolver::undoMigration(Population **p, int segment, int redundancy) {
     }
 }
 
-void MDVRPSolver::output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int seed) {
+void MDVRPSolver::innerRouteMigration(Population ** p, int segment, int redundancy) {
+    Individual* aux1 = NULL;
+    Individual* aux2 = NULL;
+    for(int i = 1; i < segment; ++i) {
+        int firstIndex = rand()%this->nIndividuals;
+        aux1 = p[i]->getIndividual(firstIndex);
+        for(int r = 1; r < redundancy; ++r) {
+            int index = rand()%this->nIndividuals;
+            aux2 = p[i + segment*r]->getIndividual(index);
+            p[i + segment*r]->setIndividual(aux1, index);
+            aux1 = aux2;
+        }
+        p[i]->setIndividual(aux1, firstIndex);
+    }
+    
+}
+
+void MDVRPSolver::output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int itToInnerMig, int seed) {
     const char* assignment = "furtherCluster";
     int capacityFeasible = 0;
     int durationFeasible = 0;

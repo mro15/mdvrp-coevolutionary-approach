@@ -19,7 +19,7 @@ MDVRPSolver::MDVRPSolver(Operation& op,
     */
     bestResult=0;
     this->maxDuration = maxDurationIn;
-    this->capacity = maxDurationIn;
+    this->capacity = capacityIn;
     this->nIndividuals = nIndividualsIn;
 }
 
@@ -201,7 +201,7 @@ void MDVRPSolver::innerRouteMigration(Population ** p, int segment, int redundan
         }
         p[i]->setIndividual(aux1, firstIndex);
     }
-    
+
 }
 
 void MDVRPSolver::output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int itToInnerMig, int seed) {
@@ -228,8 +228,8 @@ void MDVRPSolver::output(Population** population, int segment, int redundancy, i
         "Routes",
         "Graph");
     for(int i = 1; i < segment; ++i) {
-        bool capacity = false;
-        bool duration = false;
+        bool capacity = true;
+        bool duration = true;
         double bestFitness = 0;
         for(int r = 0; r < redundancy; ++r) {
             Individual* best = population[i + r*segment]->best();
@@ -239,13 +239,13 @@ void MDVRPSolver::output(Population** population, int segment, int redundancy, i
                 double result = best->duration();
                 if(bestFitness == 0) {
                     bestFitness = result;
-                    capacity = population[i]->underCapacity();
+                    capacity = population[i + r*segment]->underCapacity();
                     duration = best->feasible();
                 }
 
                 else if(bestFitness > result) {
                     bestFitness = result;
-                    capacity = population[i]->underCapacity();
+                    capacity = population[i + r*segment]->underCapacity();
                     duration = best->feasible();
                 }
             }

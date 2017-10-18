@@ -50,6 +50,9 @@ class Population {
         bool canReceive(int id);
         void saveHistory(Migration m);
         void debug();
+        void streamTo(std::ostream& os) const;
 };
+
+std::ostream& operator<<(std::ostream& os, const Population& i);
 
 #endif

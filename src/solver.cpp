@@ -212,7 +212,7 @@ void MDVRPSolver::output(Population** population, int segment, int redundancy, i
     char header[300];
     char line[300];
     sprintf(header,
-        "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+        "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
         "Seed",
         "N° Individuals",
         "Mutation Ratio",
@@ -220,7 +220,6 @@ void MDVRPSolver::output(Population** population, int segment, int redundancy, i
         "Duration",
         "Capacity",
         "Duration",
-        "N° Routes",
         "N° Depots",
         "Assignment",
         "Mutation Operator",
@@ -261,13 +260,14 @@ void MDVRPSolver::output(Population** population, int segment, int redundancy, i
         }
     }
     sprintf(line,
-        "\"%d\";\"%d\";\"%lf\";\"%d\";\"%lf\";\"%d\";\"%d\";\"%d\";\"%d\";\"%s\";\"%s\";\"%s\";\"%s\";\"[",
+        "\"%d\";\"%d\";\"%lf\";\"%d\";\"%lf\";\"(%d/%d)\";\"(%d/%d)\";\"%d\";\"%s\";\"%s\";\"%s\";\"%s\";\"[",
         seed,
         nIndividuals,
         operation.mutationRatio(),
         iterations,
         fitness,
         capacityFeasible,
+        segment -1,
         durationFeasible,
         segment -1,
         g.nDepots(),

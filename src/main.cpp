@@ -62,7 +62,7 @@ int main(int argc, char* argv[]){
     g.buildEdges();
     MutSwap mutOp(mutationRatio);
     CrCut crOp(nCustomers + nDepots);
-    SelTour selOp(10);
+    SelTour selOp(3);
 
     Operation op(mutOp, crOp, selOp);
     MDVRPSolver solver(op, g, maxRouteDuration, capacity, populationSize);

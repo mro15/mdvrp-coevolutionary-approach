@@ -275,3 +275,16 @@ void Population::debug() {
 void Population::saveHistory(Migration m) {
     this->history.push_back(m);
 }
+
+void Population::streamTo(std::ostream& os) const {
+    os << "[" << *individuals[0];
+    for (int i = 1; i < this->_nIndividuals; ++i) {
+        os << std::endl << *individuals[i];
+    }
+    os << "]";
+}
+
+std::ostream& operator<<(std::ostream& os, const Population& i) {
+    i.streamTo(os);
+    return os;
+}

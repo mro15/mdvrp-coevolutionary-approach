@@ -16,7 +16,9 @@ class MDVRPSolver {
         Operation& operation;
         Graph& g;
         Population** initPopulations(int redudancy);
-        void migrate(Population **p, int length, int searchSpace);
+        void migrate(Population **p, int length, int redundancy, int searchSpace);
+        void output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int seed);
+        void undoMigration(Population **p, int segment, int redundancy);
     public:
         MDVRPSolver(Operation& op, Graph&g, double maxDuration, double capacity, int nIndividuals);
         void solve(int iterations, int itToMigrate, int redudancy, int seed);

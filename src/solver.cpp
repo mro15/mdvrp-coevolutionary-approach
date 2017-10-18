@@ -44,41 +44,147 @@ void MDVRPSolver::solve( int iterations,
     */
     srand(seed);
     Population ** population = this->initPopulations(redundancy);
-    const char* assignment = "furtherCluster";
 
-    int length = g.nDepots()*g.maxVehicles() +1, searchSpace = 3;
-    for(int i = 1; i < length; ++i) {
-        population[i]->start();
+    int segment = g.nDepots()*g.maxVehicles() +1;
+    int searchSpace = 3;
+    for(int i = 1; i < segment; ++i) {
+        for(int r = 0; r < redundancy; ++r) {
+            population[i + r*segment]->start();
+        }
     }
 
     for(int i = 0; i < iterations; ++i) {
-        for(int j = 1; j < length; ++j) {
-            population[j]->iterate();
+        for(int j = 1; j < segment; ++j) {
+            for(int r = 0; r < redundancy; ++r) {
+                population[j + r*segment]->iterate();
+            }
         }
         if (i%itToMigrate == 0) {
             if(bestResult != 0) {
                 double result = 0;
-                Individual* ind = population[lastMigration.source]->best();
-                if(ind != NULL) {
-                    result += ind->duration();
+                for (int r = 0; r < redundancy; ++ r ) {
+                    Individual* ind = population[lastMigration.source + r*segment]->best();
+                    if(ind != NULL) {
+                        result += ind->duration();
+                    }
+                    ind = population[lastMigration.target + r*segment]->best();
+                    if(ind != NULL) {
+                        result += ind->duration();
+                    }
                 }
-                ind = population[lastMigration.target]->best();
-                if(ind != NULL) {
-                    result += ind->duration();
-                }
-                if(result > bestResult && population[lastMigration.source]->canReceive(lastMigration.customer)) {
-                    population[lastMigration.target]->removeClient(lastMigration.customer);
-                    population[lastMigration.target]->compact(lastMigration.customer);
-                    population[lastMigration.source]->addClient(lastMigration.customer);
-                    population[lastMigration.source]->expand(lastMigration.customer);
-                    population[lastMigration.target]->saveHistory(lastMigration);
+                if ( result > bestResult &&
+                     population[lastMigration.source]->canReceive(lastMigration.customer)) {
+
+                    this->undoMigration(population, segment, redundancy);
                 }
                 searchSpace += (searchSpace < 7)? 1 : 0;
             }
-            this->migrate(population, length, searchSpace);
+            this->migrate(population, segment, redundancy, searchSpace);
         }
     }
 
+    this->output(population, segment, redundancy, iterations, itToMigrate, seed);
+}
+
+Population** MDVRPSolver::initPopulations(int redundancy) {
+    /*
+        Creates a set of Populations and initializes it with some clients
+        but 0 individuals.
+        Parameters: g, Graph that represents clients and depots
+                    nDepots, the number of depots of the problem
+                    nVehicles, max number of vehicles in each depot
+
+        This member function creates the instances of Populations and add the
+        clients to it.
+    */
+    int nDepots = g.nDepots();
+    int nVehicles = g.maxVehicles();
+    int segment = nDepots*nVehicles +1;
+    int length = segment*redundancy;
+    Population** p = new Population*[length];
+    int* depots = g.depots();
+    int** assignment = g.assignment();
+    for (int r = 0; r < redundancy; ++r) {
+        for (int i = 0; i < nDepots; ++i) {
+            for(int j = 0; j < nVehicles; ++j) {
+                int segIndex = i*nVehicles + j +1;
+                int index = segIndex + (segment*r);
+                p[index] = new Population( segIndex,
+                                           g,
+                                           this->operation,
+                                           depots[i],
+                                           maxDuration,
+                                           capacity,
+                                           nIndividuals);
+                for(int k = 0; k < g.nVertices(); ++k) {
+                    if(assignment[segIndex -1][k] == 1) {
+                        p[index]->addClient(k);
+                    }
+                }
+            }
+        }
+    }
+
+    return p;
+}
+
+void MDVRPSolver::migrate(Population **p, int segment, int redundancy, int searchSpace) {
+    std::vector<Migration> migrations;
+    // This consider only the first segment, because migration is based in the
+    // clients not in the indvividuals itself, in case migration
+    // change reviw this code
+    for(int i = 1; i < segment; ++i) {
+        std::vector<Migration> m = p[i]->migration(searchSpace);
+        migrations.insert(migrations.end(), m.begin(), m.end());
+    }
+
+    std::sort(migrations.begin(), migrations.end());
+    bool did = false;
+    bestResult = 0;
+    while(!migrations.empty() && !did) {
+        Migration& m = *migrations.begin();
+        //WARN: ids das rotas como indices
+        if(p[m.target]->canReceive(m.customer)) {
+            lastMigration = m;
+            did = true;
+            for (int r = 0; r < redundancy; ++ r ) {
+                double sourceDur = p[m.source + segment*r]->best()->duration();
+                double targetDur = p[m.target + segment*r]->best()->duration();
+                double result = sourceDur + targetDur;
+                if (bestResult == 0) {
+                    bestResult = result;
+                }
+
+                else if(result > bestResult) {
+                    bestResult = result;
+                }
+                p[m.source + segment*r]->removeClient(m.customer);
+                p[m.source + segment*r]->compact(m.customer);
+                p[m.target + segment*r]->addClient(m.customer);
+                p[m.target + segment*r]->expand(m.customer);
+                p[m.source + segment*r]->saveHistory(m);
+            }
+        }
+        else {
+            migrations.erase(migrations.begin());
+        }
+    }
+
+    return;
+}
+
+void MDVRPSolver::undoMigration(Population **p, int segment, int redundancy) {
+    for (int r = 0; r < redundancy; ++ r ) {
+        p[lastMigration.target + segment*r]->removeClient(lastMigration.customer);
+        p[lastMigration.target + segment*r]->compact(lastMigration.customer);
+        p[lastMigration.source + segment*r]->addClient(lastMigration.customer);
+        p[lastMigration.source + segment*r]->expand(lastMigration.customer);
+        p[lastMigration.target + segment*r]->saveHistory(lastMigration);
+    }
+}
+
+void MDVRPSolver::output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int seed) {
+    const char* assignment = "furtherCluster";
     int capacityFeasible = 0;
     int durationFeasible = 0;
     double fitness = 0.0;
@@ -101,21 +207,36 @@ void MDVRPSolver::solve( int iterations,
         "Selection Operator",
         "Routes",
         "Graph");
-    for(int i = 1; i < length; ++i) {
-        Individual* best = population[i]->best();
-        if(best != NULL) {
-            // printf("(%d): %d:", i, population[i]->depot());
-            //best->debug();
-            bool capacity = population[i]->underCapacity();
-            bool duration = best->feasible();
-            fitness += best->duration();
-            // printf(": %d, %d\n",  capacity, duration);
-            if (capacity) {
-                ++capacityFeasible;
+    for(int i = 1; i < segment; ++i) {
+        bool capacity = false;
+        bool duration = false;
+        double bestFitness = 0;
+        for(int r = 0; r < redundancy; ++r) {
+            Individual* best = population[i + r*segment]->best();
+            if(best != NULL) {
+                // printf("(%d): %d:", i, population[i]->depot());
+                //best->debug();
+                double result = best->duration();
+                if(bestFitness == 0) {
+                    bestFitness = result;
+                    capacity = population[i]->underCapacity();
+                    duration = best->feasible();
+                }
+
+                else if(bestFitness > result) {
+                    bestFitness = result;
+                    capacity = population[i]->underCapacity();
+                    duration = best->feasible();
+                }
             }
-            if (duration) {
-                ++durationFeasible;
-            }
+        }
+        fitness += bestFitness;
+        // printf(": %d, %d\n",  capacity, duration);
+        if (capacity) {
+            ++capacityFeasible;
+        }
+        if (duration) {
+            ++durationFeasible;
         }
     }
     sprintf(line,
@@ -127,7 +248,7 @@ void MDVRPSolver::solve( int iterations,
         fitness,
         capacityFeasible,
         durationFeasible,
-        length -1,
+        segment -1,
         g.nDepots(),
         assignment,
         operation.mutName(),
@@ -146,67 +267,4 @@ void MDVRPSolver::solve( int iterations,
         }
     }*/
     std::cout << "]\";\"" /*<< g*/ << "\"\n";
-}
-
-Population** MDVRPSolver::initPopulations(int redundancy) {
-    /*
-        Creates a set of Populations and initializes it with some clients
-        but 0 individuals.
-        Parameters: g, Graph that represents clients and depots
-                    nDepots, the number of depots of the problem
-                    nVehicles, max number of vehicles in each depot
-
-        This member function creates the instances of Populations and add the
-        clients to it.
-    */
-    int nDepots = g.nDepots();
-    int nVehicles = g.maxVehicles();
-    int length = nDepots*nVehicles +1;
-    Population** r = new Population*[length];
-    int* depots = g.depots();
-    int** assignment = g.assignment();
-    for (int i = 0; i < nDepots; ++i) {
-        for(int j = 0; j < nVehicles; ++j) {
-            int index = i*nVehicles + j +1;
-            r[index] = new Population(index, g, this->operation, depots[i], maxDuration, capacity, nIndividuals);
-            for(int k = 0; k < g.nVertices(); ++k) {
-                if(assignment[index -1][k] == 1) {
-                    r[index]->addClient(k);
-                }
-            }
-        }
-    }
-
-    return r;
-}
-
-void MDVRPSolver::migrate(Population **p, int length, int searchSpace) {
-    std::vector<Migration> migrations;
-    for(int i = 1; i < length; ++i) {
-        std::vector<Migration> m = p[i]->migration(searchSpace);
-        migrations.insert(migrations.end(), m.begin(), m.end());
-    }
-
-    std::sort(migrations.begin(), migrations.end());
-    bool did = false;
-    bestResult = 0;
-    while(!migrations.empty() && !did) {
-        Migration& m = *migrations.begin();
-        //WARN: ids das rotas como indices
-        if(p[m.target]->canReceive(m.customer)) {
-            bestResult = p[m.source]->best()->duration() + p[m.target]->best()->duration();
-            p[m.source]->removeClient(m.customer);
-            p[m.source]->compact(m.customer);
-            p[m.target]->addClient(m.customer);
-            p[m.target]->expand(m.customer);
-            p[m.source]->saveHistory(m);
-            lastMigration = m;
-            did = true;
-        }
-        else {
-            migrations.erase(migrations.begin());
-        }
-    }
-
-    return;
 }

@@ -7,20 +7,26 @@
 */
 #include <solver.h>
 
-MDVRPSolver::MDVRPSolver(Operation& op, int seed): operation(op) {
+MDVRPSolver::MDVRPSolver(Operation& op,
+                         Graph& gIn,
+                         double maxDurationIn,
+                         double capacityIn,
+                         int nIndividualsIn):
+                         operation(op),
+                         g(gIn) {
     /*
         Creates a instance of the solver
     */
     bestResult=0;
-    this->seed = seed;
+    this->maxDuration = maxDurationIn;
+    this->capacity = maxDurationIn;
+    this->nIndividuals = nIndividualsIn;
 }
 
-void MDVRPSolver::solve( Graph& g,
-                         double maxDuration,
-                         double capacity,
-                         int iterations,
+void MDVRPSolver::solve( int iterations,
                          int itToMigrate,
-                         int nIndividuals) {
+                         int redundancy,
+                         int seed ) {
     /*
         Solve the MDVRP.
         Parameters: g, Graph that represents clients and depots
@@ -36,7 +42,8 @@ void MDVRPSolver::solve( Graph& g,
 
         returns NULL in error or impossibility to solve.
     */
-    Population ** population = this->initPopulations(g, maxDuration, capacity, nIndividuals);
+    srand(seed);
+    Population ** population = this->initPopulations(redundancy);
     const char* assignment = "furtherCluster";
 
     int length = g.nDepots()*g.maxVehicles() +1, searchSpace = 3;
@@ -113,7 +120,7 @@ void MDVRPSolver::solve( Graph& g,
     }
     sprintf(line,
         "\"%d\";\"%d\";\"%lf\";\"%d\";\"%lf\";\"%d\";\"%d\";\"%d\";\"%d\";\"%s\";\"%s\";\"%s\";\"%s\";\"[",
-        this->seed,
+        seed,
         nIndividuals,
         operation.mutationRatio(),
         iterations,
@@ -141,7 +148,7 @@ void MDVRPSolver::solve( Graph& g,
     std::cout << "]\";\"" /*<< g*/ << "\"\n";
 }
 
-Population** MDVRPSolver::initPopulations(Graph& g, double maxDuration, double capacity, int nIndividuals) {
+Population** MDVRPSolver::initPopulations(int redundancy) {
     /*
         Creates a set of Populations and initializes it with some clients
         but 0 individuals.

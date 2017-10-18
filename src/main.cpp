@@ -16,12 +16,13 @@
 
 int main(int argc, char* argv[]){
     int nCustomers, nDepots, nVehicles, nIterations, populationSize, itToMigrate;
+    int redundancy; /*Number of multi-populations (populations with the same clients)*/
     double maxRouteDuration, capacity, mutationRatio;
     std::fstream input;
     char* fileName;
     int seed = time(0);
-    if(!(argc==6 || argc==7 )){
-        std::cout << "Usage is <infile> <n iterations> <n iterations to Migrate> <population size> <mutation ratio> [<seed>]\n";
+    if(!(argc==7 || argc==8 )){
+        std::cout << "Usage is <infile> <n iterations> <n iterations to Migrate> <population size> <mutation ratio> <n_populations> [<seed>]\n";
         return 0;
     }else{
         fileName = argv[1];
@@ -29,8 +30,9 @@ int main(int argc, char* argv[]){
         itToMigrate = atoi(argv[3]);
         populationSize = atoi(argv[4]);
         mutationRatio = atof(argv[5]);
-        if(argc == 7) {
-            seed = atoi(argv[6]);
+        redundancy = atof(argv[6]);
+        if(argc == 8) {
+            seed = atoi(argv[7]);
         }
     }
     input.open(fileName, std::ifstream::in);
@@ -61,9 +63,8 @@ int main(int argc, char* argv[]){
     SelTour selOp(10);
 
     Operation op(mutOp, crOp, selOp);
-    srand(seed);
-    MDVRPSolver solver(op, seed);
-    solver.solve(g, maxRouteDuration, capacity, nIterations, itToMigrate, populationSize);
+    MDVRPSolver solver(op, g, maxRouteDuration, capacity, populationSize);
+    solver.solve(nIterations, itToMigrate, redundancy, seed);
     return 0;
 }
 

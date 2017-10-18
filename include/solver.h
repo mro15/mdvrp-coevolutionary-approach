@@ -8,15 +8,18 @@
 
 class MDVRPSolver {
     private:
-        int seed;
         double bestResult;
+        double maxDuration;
+        double capacity;
+        int nIndividuals;
         Migration lastMigration;
         Operation& operation;
-        Population** initPopulations(Graph &g, double maxDuration, double capacity, int nIndividuals);
+        Graph& g;
+        Population** initPopulations(int redudancy);
+        void migrate(Population **p, int length, int searchSpace);
     public:
-        MDVRPSolver(Operation& op, int seed);
-        void solve(Graph& g, double maxDuration, double capacity, int iterations, int itToMigrate, int nIndividuals);
-    void migrate(Population **p, int length, int searchSpace);
+        MDVRPSolver(Operation& op, Graph&g, double maxDuration, double capacity, int nIndividuals);
+        void solve(int iterations, int itToMigrate, int redudancy, int seed);
 };
 
 #endif

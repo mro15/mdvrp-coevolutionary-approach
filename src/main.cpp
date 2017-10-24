@@ -24,15 +24,24 @@ int main(int argc, char* argv[]){
     bool maxMigrations = false;
     int seed = time(0);
     if(!(argc==9 || argc==10 )){
-        std::cout << "Usage is <infile> <n iterations> <n iterations to Migrate> <population size> <mutation ratio> <n_populations> <n iterations to inner Migration> <migration mode>[<seed>]\n";
+        std::cout << "[ERROR]: Invalid parameters: the correct parameters are, in this order:" << std::endl;
+        std::cout << "<infile>        : File with instance parameters" << std::endl;
+        std::cout << "<it>            : How many iterations the method should run" << std::endl;
+        std::cout << "<pop size>      : How many individuals there arein each population" << std::endl;
+        std::cout << "<mut ratio>     : Mutation Ratio [0.000 - 1.000]" << std::endl;
+        std::cout << "<n_populations> : Number of populations for the same route" << std::endl;
+        std::cout << "<it-mig>        : How many iterations between migrations" << std::endl;
+        std::cout << "<it-in-mig>     : How many iterations to a individual migrate" << std::endl;
+        std::cout << "<migration mode>: 0 to perform maximum number of migrations per cicle, otherwise 1 migration per clicle" << std::endl;
+        std::cout << "[<seed>]        : The seed to start random numbers in the method" << std::endl;
         return 0;
     }else{
         fileName = argv[1];
         nIterations = atoi(argv[2]);
-        itToMigrate = atoi(argv[3]);
-        populationSize = atoi(argv[4]);
-        mutationRatio = atof(argv[5]);
-        redundancy = atof(argv[6]);
+        populationSize = atoi(argv[3]);
+        mutationRatio = atof(argv[4]);
+        redundancy = atof(argv[5]);
+        itToMigrate = atoi(argv[6]);
         itToInnerMig = atof(argv[7]);
         maxMigrations = (atoi(argv[8]) == 0)? true: false;
         if(argc == 10) {
@@ -40,6 +49,10 @@ int main(int argc, char* argv[]){
         }
     }
     input.open(fileName, std::ifstream::in);
+    if(!input.good()) {
+        std::cout << "[ERROR]: Could not open file: did you put th path correctly?" << std::endl;
+        return 0;
+    }
     input >> nVehicles;
     input >> nCustomers;
     input >> nDepots;

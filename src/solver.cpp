@@ -47,6 +47,8 @@ void MDVRPSolver::solve( int iterations,
     Population ** population = this->initPopulations(redundancy);
     std::vector<Migration> migrations;
     std::vector<double> results;
+    int nMig = 0;
+    int nUndoMig = 0;
 
     int segment = g.nDepots()*g.maxVehicles() +1;
     int searchSpace = 3;
@@ -68,6 +70,7 @@ void MDVRPSolver::solve( int iterations,
             this->innerRouteMigration(population, segment, redundancy);
         }
         if (i%itToMigrate == 0) {
+            nMig += migrations.size();
             for(unsigned int j = 0; j < migrations.size(); ++j) {
                 Migration& m = migrations[j];
                 double bestResult = results[j];
@@ -86,6 +89,7 @@ void MDVRPSolver::solve( int iterations,
                      population[m.source]->canReceive(m.customer)) {
 
                     this->undoMigration(population, m, segment, redundancy);
+                    ++nUndoMig;
                 }
                 searchSpace += (searchSpace < 7)? 1 : 0;
             }
@@ -93,7 +97,7 @@ void MDVRPSolver::solve( int iterations,
         }
     }
 
-    this->output(population, segment, redundancy, iterations, itToMigrate, itToInnerMig, seed);
+    this->output(population, segment, redundancy, iterations, itToMigrate, itToInnerMig, nMig, nUndoMig, maxMigrations, seed);
     delete[] this->workSpace;
 }
 
@@ -149,7 +153,7 @@ void MDVRPSolver::migrate(Population **p, int segment, int redundancy, int searc
     for(int i = 1; i < segment; ++i) {
         std::vector<Migration> m = p[i]->migration(searchSpace);
         migrations.insert(migrations.end(), m.begin(), m.end());
-        workSpace[i] = false;
+        workSpace[i] = true;
     }
 
     std::sort(migrations.begin(), migrations.end());
@@ -176,6 +180,8 @@ void MDVRPSolver::migrate(Population **p, int segment, int redundancy, int searc
                 p[m.target + segment*r]->addClient(m.customer);
                 p[m.target + segment*r]->expand(m.customer);
                 p[m.source + segment*r]->saveHistory(m);
+                workSpace[m.source] = false;
+                workSpace[m.target] = false;
             }
             results.push_back(bestResult);
             effective.push_back(m);
@@ -215,7 +221,7 @@ void MDVRPSolver::innerRouteMigration(Population ** p, int segment, int redundan
 
 }
 
-void MDVRPSolver::output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int itToInnerMig, int seed) {
+void MDVRPSolver::output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int itToInnerMig, int nMig, int nUndoMig, bool maxMigrations, int seed) {
     const char* assignment = "furtherCluster";
     int capacityFeasible = 0;
     int durationFeasible = 0;
@@ -223,19 +229,22 @@ void MDVRPSolver::output(Population** population, int segment, int redundancy, i
     char header[300];
     char line[300];
     sprintf(header,
-        "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+        "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
         "Seed",
         "N° Individuals",
         "Mutation Ratio",
         "Iterations",
         "Duration",
-        "Capacity",
-        "Duration",
+        "Crt-Capacity",
+        "Crt-Duration",
+        "N° Migrations",
+        "N° Undo Migrations",
         "N° Depots",
         "Assignment",
         "Mutation Operator",
         "Crossover Operator",
         "Selection Operator",
+        "Max Migrations",
         "Routes",
         "Graph");
     for(int i = 1; i < segment; ++i) {
@@ -271,7 +280,7 @@ void MDVRPSolver::output(Population** population, int segment, int redundancy, i
         }
     }
     sprintf(line,
-        "\"%d\";\"%d\";\"%lf\";\"%d\";\"%lf\";\"(%d/%d)\";\"(%d/%d)\";\"%d\";\"%s\";\"%s\";\"%s\";\"%s\";\"[",
+        "\"%d\";\"%d\";\"%lf\";\"%d\";\"%lf\";\"(%d/%d)\";\"(%d/%d)\";\"%d\";\"%d\";\"%d\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"[",
         seed,
         nIndividuals,
         operation.mutationRatio(),
@@ -281,11 +290,14 @@ void MDVRPSolver::output(Population** population, int segment, int redundancy, i
         segment -1,
         durationFeasible,
         segment -1,
+        nMig,
+        nUndoMig,
         g.nDepots(),
         assignment,
         operation.mutName(),
         operation.crName(),
-        operation.selName());
+        operation.selName(),
+        (maxMigrations)? "true": "false");
 
     std::cout << header << line;
     /*for(int i = 1; i < length; ++i) {

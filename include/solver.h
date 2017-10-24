@@ -15,13 +15,13 @@ class MDVRPSolver {
         Operation& operation;
         Graph& g;
         Population** initPopulations(int redudancy);
-        void migrate(Population **p, int segment, int redundancy, int searchSpace, std::vector<Migration>& effective, std::vector<double>& results);
+        void migrate(Population **p, int segment, int redundancy, int searchSpace, bool maxMigrations, std::vector<Migration>& effective, std::vector<double>& results);
         void output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int itToInnnerMig, int seed);
         void undoMigration(Population **p, const Migration& m, int segment, int redundancy);
         void innerRouteMigration(Population** p, int segment, int redundancy);
     public:
         MDVRPSolver(Operation& op, Graph&g, double maxDuration, double capacity, int nIndividuals);
-        void solve(int iterations, int itToMigrate, int redudancy, int itToInnerMig, int seed);
+        void solve(int iterations, int itToMigrate, int redudancy, int itToInnerMig, bool maxMigrations, int seed);
 };
 
 #endif

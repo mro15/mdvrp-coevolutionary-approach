@@ -21,9 +21,10 @@ int main(int argc, char* argv[]){
     double maxRouteDuration, capacity, mutationRatio;
     std::fstream input;
     char* fileName;
+    bool maxMigrations = false;
     int seed = time(0);
-    if(!(argc==8 || argc==9 )){
-        std::cout << "Usage is <infile> <n iterations> <n iterations to Migrate> <population size> <mutation ratio> <n_populations> <n iterations to inner Migration> [<seed>]\n";
+    if(!(argc==9 || argc==10 )){
+        std::cout << "Usage is <infile> <n iterations> <n iterations to Migrate> <population size> <mutation ratio> <n_populations> <n iterations to inner Migration> <migration mode>[<seed>]\n";
         return 0;
     }else{
         fileName = argv[1];
@@ -33,8 +34,9 @@ int main(int argc, char* argv[]){
         mutationRatio = atof(argv[5]);
         redundancy = atof(argv[6]);
         itToInnerMig = atof(argv[7]);
-        if(argc == 9) {
-            seed = atoi(argv[8]);
+        maxMigrations = (atoi(argv[8]) == 0)? true: false;
+        if(argc == 10) {
+            seed = atoi(argv[9]);
         }
     }
     input.open(fileName, std::ifstream::in);
@@ -66,7 +68,7 @@ int main(int argc, char* argv[]){
 
     Operation op(mutOp, crOp, selOp);
     MDVRPSolver solver(op, g, maxRouteDuration, capacity, populationSize);
-    solver.solve(nIterations, itToMigrate, redundancy, itToInnerMig, seed);
+    solver.solve(nIterations, itToMigrate, redundancy, itToInnerMig, maxMigrations, seed);
     return 0;
 }
 

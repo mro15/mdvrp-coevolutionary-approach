@@ -26,6 +26,7 @@ void MDVRPSolver::solve( int iterations,
                          int itToMigrate,
                          int redundancy,
                          int itToInnerMig,
+                         bool maxMigrations,
                          int seed ) {
     /*
         Solve the MDVRP.
@@ -88,7 +89,7 @@ void MDVRPSolver::solve( int iterations,
                 }
                 searchSpace += (searchSpace < 7)? 1 : 0;
             }
-            this->migrate(population, segment, redundancy, searchSpace, migrations, results);
+            this->migrate(population, segment, redundancy, searchSpace, maxMigrations, migrations, results);
         }
     }
 
@@ -138,7 +139,7 @@ Population** MDVRPSolver::initPopulations(int redundancy) {
     return p;
 }
 
-void MDVRPSolver::migrate(Population **p, int segment, int redundancy, int searchSpace, std::vector<Migration>& effective, std::vector<double>& results) {
+void MDVRPSolver::migrate(Population **p, int segment, int redundancy, int searchSpace, bool maxMigrations, std::vector<Migration>& effective, std::vector<double>& results) {
     std::vector<Migration> migrations;
     effective.clear();
     results.clear();
@@ -152,11 +153,13 @@ void MDVRPSolver::migrate(Population **p, int segment, int redundancy, int searc
     }
 
     std::sort(migrations.begin(), migrations.end());
-    while(!migrations.empty()) {
+    bool did = false;
+    while(!migrations.empty() && (maxMigrations || !did)) {
         Migration& m = *migrations.begin();
         //WARN: ids das rotas como indices
         if(workSpace[m.source] && workSpace[m.target] && p[m.target]->canReceive(m.customer)) {
             double bestResult = 0;
+            did = true;
             for (int r = 0; r < redundancy; ++ r ) {
                 double sourceDur = p[m.source + segment*r]->best()->duration();
                 double targetDur = p[m.target + segment*r]->best()->duration();

@@ -8,17 +8,16 @@
 
 class MDVRPSolver {
     private:
-        double bestResult;
         double maxDuration;
         double capacity;
         int nIndividuals;
-        Migration lastMigration;
+        bool* workSpace;
         Operation& operation;
         Graph& g;
         Population** initPopulations(int redudancy);
-        void migrate(Population **p, int length, int redundancy, int searchSpace);
+        void migrate(Population **p, int segment, int redundancy, int searchSpace, std::vector<Migration>& effective, std::vector<double>& results);
         void output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int itToInnnerMig, int seed);
-        void undoMigration(Population **p, int segment, int redundancy);
+        void undoMigration(Population **p, const Migration& m, int segment, int redundancy);
         void innerRouteMigration(Population** p, int segment, int redundancy);
     public:
         MDVRPSolver(Operation& op, Graph&g, double maxDuration, double capacity, int nIndividuals);

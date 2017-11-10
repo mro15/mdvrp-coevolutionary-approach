@@ -53,3 +53,7 @@ const char* Operation::crName() {
 const char* Operation::selName() {
     return selectionOperator.name();
 }
+
+int Operation::selParam() {
+    return selectionOperator.param();
+}

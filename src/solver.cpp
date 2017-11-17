@@ -231,9 +231,10 @@ void MDVRPSolver::output(Population** population, int segment, int redundancy, i
     char header[500];
     char line[500];
     sprintf(header,
-        "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+        "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
         "Seed",
         "N° Individuals",
+        "N° Multi-Pop",
         "Mutation Ratio",
         "Iterations",
         "Duration",
@@ -286,9 +287,10 @@ void MDVRPSolver::output(Population** population, int segment, int redundancy, i
         }
     }
     sprintf(line,
-        "\"%d\";\"%d\";\"%lf\";\"%d\";\"%lf\";\"%d\";\"%d\";\"%d\";\"%d\";\"%d\";\"%d\";\"%d\";\"%d\";\"%s\";\"%s\";\"%s\";\"%s\";\"%d\";\"%s\";\"[",
+        "\"%d\";\"%d\";\"%d\";\"%lf\";\"%d\";\"%lf\";\"%d\";\"%d\";\"%d\";\"%d\";\"%d\";\"%d\";\"%d\";\"%d\";\"%s\";\"%s\";\"%s\";\"%s\";\"%d\";\"%s\";\"[",
         seed,
         nIndividuals,
+        redundancy,
         operation.mutationRatio(),
         iterations,
         fitness,
@@ -308,15 +310,33 @@ void MDVRPSolver::output(Population** population, int segment, int redundancy, i
         (maxMigrations)? "true": "false");
 
     std::cout << header << line;
-    /*for(int i = 1; i < length; ++i) {
-        Individual* best = population[i]->best();
-        if(best != NULL) {
-            std::cout << *best << ",";
+    for(int i = 1; i < segment; ++i) {
+        double bestFitness = 0;
+        Individual* realBest = NULL;
+        for(int r = 0; r < redundancy; ++r) {
+            Individual* best = population[i + r*segment]->best();
+            if(best != NULL) {
+                // printf("(%d): %d:", i, population[i]->depot());
+                //best->debug();
+                double result = best->duration();
+                if(bestFitness == 0) {
+                    bestFitness = result;
+                    realBest = best;
+                }
+
+                else if(bestFitness > result) {
+                    bestFitness = result;
+                    realBest = best;
+                }
+            }
+        }
+        if(realBest != NULL) {
+            std::cout << *realBest << ",";
         }
 
         else {
             std::cout << "[],";
         }
-    }*/
-    std::cout << "]\";\"" /*<< g*/ << "\"\n";
+    }
+    std::cout << "]\";\"" << g << "\"\n";
 }

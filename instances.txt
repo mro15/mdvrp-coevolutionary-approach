@@ -1,9 +1,0 @@
-Instance | Instance number
-n           number of customers
-m           number of depots
-k           maximun number ofvehicles availables at each depot
-D           maximum duration of each route
-Q           capacity of each vehicle
-i           customer id
-[x, y]      coordenadas
-[d, q]      service duration, demand

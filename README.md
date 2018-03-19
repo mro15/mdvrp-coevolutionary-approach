@@ -33,5 +33,5 @@ There are several parameters to run, below they are listed in the order in which
 [\<seed>]        : The seed to start random numbers in the method, this parameter is optional
 
 
-The input instances can be found in  instances directory. They was taken from
+The input instances can be found in  instances directory. They were taken from
 (https://github.com/fboliveira/MDVRP-Instances) project.  But you can also build your own instances.

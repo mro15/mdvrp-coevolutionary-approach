@@ -4,8 +4,8 @@
 instances=$(ls ../instances)
 
 populationSize="10 50 100"
-mutationRatio="0.0625 0.125"
-iterations="10 100 1000"
+mutationRatio="0.0625 0.125 0.001"
+iterations="1000 10000 100000"
 
 id=0
 

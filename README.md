@@ -1,4 +1,4 @@
-## Implementation of an algorithm to solve the multi-depot vehicle routing problem.
+## Implementation of an algorithm to solve the multi-depot vehicle routing problem (MDVRP).
 
 ### Run:
 First you need to compile the code:
@@ -17,7 +17,7 @@ There are several parameters to run, below they are listed in the order in which
   
 \<it>            : How many iterations the method should run
   
-\<pop size>      : How many individuals there arein each population
+\<pop size>      : How many individuals there are in each population
   
 \<mut ratio>     : Mutation Ratio [0.000 - 1.000]
   

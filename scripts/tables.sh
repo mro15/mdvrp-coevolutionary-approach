@@ -13,7 +13,7 @@ for i in $instances; do
         for it in $iterations; do
             for mr in $mutationRatio; do
                 for red in $redundancy; do
-                    ../main ../instances/$i $it 10 $p $mr $red 5 1| tail -n1 >> ../distances/$i.out.csv
+                    ../main ../instances/$i $it $p $mr $red 100 5 1 | tail -n1 >> ../distances/$i.out.csv
                 done
             done
         done

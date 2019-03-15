@@ -3,10 +3,8 @@
 instances=$(ls ../instances)
 
 populationSize="10 50 100"
-mutationRatio="0.0625 0.125"
-iterations="10 100 1000"
-redundancy="1 2 4"
-
+mutationRatio="0.0625 0.125 0.001"
+iterations="1000 10000 100000"
 migIterations=("10 5" "20 10" "100 50")
 
 keys="seed,nIndividuals,nPops,mutRatio,iterations,duration,crtCapacity"

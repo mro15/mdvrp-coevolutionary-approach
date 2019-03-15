@@ -179,3 +179,11 @@ Individual*** SelRol::select(Individual** individuals, int length) {
 const char* Operator::name() {
     return _name;
 }
+
+int SelRol::param() {
+    return 0;
+}
+
+int SelTour::param() {
+    return poolSize;
+}

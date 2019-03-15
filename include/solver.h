@@ -16,7 +16,7 @@ class MDVRPSolver {
         Graph& g;
         Population** initPopulations(int redudancy);
         void migrate(Population **p, int segment, int redundancy, int searchSpace, bool maxMigrations, std::vector<Migration>& effective, std::vector<double>& results);
-        void output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int itToInnnerMig, int nMig, int nUndoMig, bool maxMigrations, int seed);
+        void output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int itToInnnerMig, int nMig, int nUndoMig, bool maxMigrations, int minSearchSpace, int maxSearchSpace,int seed);
         void undoMigration(Population **p, const Migration& m, int segment, int redundancy);
         void innerRouteMigration(Population** p, int segment, int redundancy);
     public:

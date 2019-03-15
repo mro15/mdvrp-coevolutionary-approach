@@ -27,6 +27,7 @@ class CrossOverOperator: public Operator {
 class SelectionOperator: public Operator {
     public:
         virtual Individual*** select(Individual** i, int length) = 0;
+        virtual int param() = 0;
 };
 
 class MutSwap : public MutationOperator {
@@ -52,6 +53,7 @@ class SelRol : public SelectionOperator {
     public:
         SelRol();
         Individual*** select(Individual** i, int length);
+        int param();
 };
 
 class SelTour : public SelectionOperator {
@@ -60,5 +62,6 @@ class SelTour : public SelectionOperator {
     public:
         SelTour(int poolSize);
         Individual*** select(Individual** i, int length);
+        int param();
 };
 #endif

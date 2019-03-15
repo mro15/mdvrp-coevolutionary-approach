@@ -20,6 +20,7 @@ class Operation {
         const char* mutName();
         const char* crName();
         const char* selName();
+        int selParam();
 };
 
 #define __OPERATION_H

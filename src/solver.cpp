@@ -47,11 +47,13 @@ void MDVRPSolver::solve( int iterations,
     Population ** population = this->initPopulations(redundancy);
     std::vector<Migration> migrations;
     std::vector<double> results;
+    const int minSearchSpace = 3;
+    const int maxSearchSpace = 7;
     int nMig = 0;
     int nUndoMig = 0;
 
     int segment = g.nDepots()*g.maxVehicles() +1;
-    int searchSpace = 3;
+    int searchSpace = minSearchSpace;
     for(int i = 1; i < segment; ++i) {
         for(int r = 0; r < redundancy; ++r) {
             population[i + r*segment]->start();
@@ -91,13 +93,13 @@ void MDVRPSolver::solve( int iterations,
                     this->undoMigration(population, m, segment, redundancy);
                     ++nUndoMig;
                 }
-                searchSpace += (searchSpace < 7)? 1 : 0;
+                searchSpace += (searchSpace < maxSearchSpace)? 1 : 0;
             }
             this->migrate(population, segment, redundancy, searchSpace, maxMigrations, migrations, results);
         }
     }
 
-    this->output(population, segment, redundancy, iterations, itToMigrate, itToInnerMig, nMig, nUndoMig, maxMigrations, seed);
+    this->output(population, segment, redundancy, iterations, itToMigrate, itToInnerMig, nMig, nUndoMig, maxMigrations, minSearchSpace, maxSearchSpace, seed);
     delete[] this->workSpace;
 }
 
@@ -221,29 +223,34 @@ void MDVRPSolver::innerRouteMigration(Population ** p, int segment, int redundan
 
 }
 
-void MDVRPSolver::output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int itToInnerMig, int nMig, int nUndoMig, bool maxMigrations, int seed) {
+void MDVRPSolver::output(Population** population, int segment, int redundancy, int iterations, int itToMigrate, int itToInnerMig, int nMig, int nUndoMig, bool maxMigrations, int minSearchSpace, int maxSearchSpace, int seed) {
     const char* assignment = "furtherCluster";
     int capacityFeasible = 0;
     int durationFeasible = 0;
     double fitness = 0.0;
-    char header[300];
-    char line[300];
+    char header[500];
+    char line[500];
     sprintf(header,
-        "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
+        "\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\"\n",
         "Seed",
         "N° Individuals",
+        "N° Multi-Pop",
         "Mutation Ratio",
         "Iterations",
         "Duration",
         "Crt-Capacity",
         "Crt-Duration",
+        "N° Routes",
         "N° Migrations",
         "N° Undo Migrations",
         "N° Depots",
+        "Min. SearchSpace",
+        "Max. SearchSpace",
         "Assignment",
         "Mutation Operator",
         "Crossover Operator",
         "Selection Operator",
+        "Tournament Pool",
         "Max Migrations",
         "Routes",
         "Graph");
@@ -280,35 +287,56 @@ void MDVRPSolver::output(Population** population, int segment, int redundancy, i
         }
     }
     sprintf(line,
-        "\"%d\";\"%d\";\"%lf\";\"%d\";\"%lf\";\"(%d/%d)\";\"(%d/%d)\";\"%d\";\"%d\";\"%d\";\"%s\";\"%s\";\"%s\";\"%s\";\"%s\";\"[",
+        "\"%d\";\"%d\";\"%d\";\"%lf\";\"%d\";\"%lf\";\"%d\";\"%d\";\"%d\";\"%d\";\"%d\";\"%d\";\"%d\";\"%d\";\"%s\";\"%s\";\"%s\";\"%s\";\"%d\";\"%s\";\"[",
         seed,
         nIndividuals,
+        redundancy,
         operation.mutationRatio(),
         iterations,
         fitness,
         capacityFeasible,
-        segment -1,
         durationFeasible,
         segment -1,
         nMig,
         nUndoMig,
         g.nDepots(),
+        minSearchSpace,
+        maxSearchSpace,
         assignment,
         operation.mutName(),
         operation.crName(),
         operation.selName(),
+        operation.selParam(),
         (maxMigrations)? "true": "false");
 
     std::cout << header << line;
-    /*for(int i = 1; i < length; ++i) {
-        Individual* best = population[i]->best();
-        if(best != NULL) {
-            std::cout << *best << ",";
+    for(int i = 1; i < segment; ++i) {
+        double bestFitness = 0;
+        Individual* realBest = NULL;
+        for(int r = 0; r < redundancy; ++r) {
+            Individual* best = population[i + r*segment]->best();
+            if(best != NULL) {
+                // printf("(%d): %d:", i, population[i]->depot());
+                //best->debug();
+                double result = best->duration();
+                if(bestFitness == 0) {
+                    bestFitness = result;
+                    realBest = best;
+                }
+
+                else if(bestFitness > result) {
+                    bestFitness = result;
+                    realBest = best;
+                }
+            }
+        }
+        if(realBest != NULL) {
+            std::cout << *realBest << ",";
         }
 
         else {
             std::cout << "[],";
         }
-    }*/
-    std::cout << "]\";\"" /*<< g*/ << "\"\n";
+    }
+    std::cout << "]\";\"" << g << "\"\n";
 }
